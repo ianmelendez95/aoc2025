@@ -33,8 +33,8 @@ mkDial start = DialCtx start 0
 type DialState = State DialCtx
 
 readInput :: IO T.Text
-readInput = TIO.readFile "src/Day0/short.txt" -- 3
--- readInput = TIO.readFile "src/Day0/full.txt" -- 1097
+-- readInput = TIO.readFile "src/Day0/short.txt" -- 3
+readInput = TIO.readFile "src/Day0/full.txt" -- p1: 1097, p2: 7101
 
 soln :: IO ()
 soln = do
@@ -44,7 +44,7 @@ soln = do
   -- print nums
   -- print accum_sum
   -- TIO.putStrLn content
-  print $ doMoves nums
+  print $ doMovesState nums
 
 execDial :: DialState a -> DialCtx -> DialCtx
 execDial = execState
