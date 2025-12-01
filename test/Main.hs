@@ -43,6 +43,17 @@ main = hspec $ do
         let res = moveDial' 0 (-5)
         res `shouldBe` (95, 0)
 
+      -- (28,-928,0,100,10,10)
+      -- start = 28
+      -- delta = -928
+      -- s_pos = 0
+      -- m_pos = 100
+      -- s_zeros = 10
+      -- m_zeros = 10
+      it "28 -928" $ do 
+        let res = moveDial' 28 (-928)
+        res `shouldBe` (0, 10)
+
     describe "doMoves" $ do 
       it "-68" $ do 
         let res = doMoves [-68]
@@ -63,6 +74,7 @@ main = hspec $ do
       it "0 200 -1" $ do 
         let res = doMoves' 0 [200, -1]
         res `shouldBe` (99, 2)
+
     
     describe "moveDialState" $ do 
       it "-68" $ do 
