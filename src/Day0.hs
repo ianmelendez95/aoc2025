@@ -3,27 +3,12 @@ module Day0
     moveDial',
     doMoves,
     doMoves',
-    mkDial,
   )
 where
 
-import Control.Monad (mapM_, replicateM_, void)
-import Control.Monad.State (State, execState, get, put, runState)
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
 import Data.Text.Read
-import Debug.Trace (traceShowId)
-
-data DialCtx = DialCtx
-  { _dialPos :: Int,
-    _dialZeros :: Int
-  }
-  deriving (Show, Eq)
-
-mkDial :: Int -> DialCtx
-mkDial start = DialCtx start 0
-
-type DialState = State DialCtx
 
 readInput :: IO T.Text
 -- readInput = TIO.readFile "src/Day0/short.txt" -- 3
