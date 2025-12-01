@@ -1,6 +1,6 @@
 module Main (main) where
 
-import Day0 (moveDial', doMoves) 
+import Day0 (moveDial', doMoves, doMoves') 
 import Test.Hspec
   ( Expectation,
     SpecWith (..),
@@ -56,5 +56,12 @@ main = hspec $ do
       it "-68 -30 48 -5 60" $ do 
         let res = doMoves [-68, -30, 48, -5, 60]
         res `shouldBe` (55, 3)
+
+      it "0 200" $ do 
+        let res = doMoves' 0 [200]
+        res `shouldBe` (0, 2)
+      it "0 200 -1" $ do 
+        let res = doMoves' 0 [200, -1]
+        res `shouldBe` (99, 2)
 
 
