@@ -48,7 +48,8 @@ build-type:         Simple
 extra-doc-files:    CHANGELOG.md
 
 -- Extra source files to be distributed with the package, such as examples, or a tutorial module.
--- extra-source-files:
+extra-source-files:
+    files/*
 
 common warnings
     ghc-options: -Wall
@@ -58,7 +59,9 @@ library
     import:           warnings
 
     -- Modules exported by the library.
-    exposed-modules:  MyLib
+    exposed-modules:  
+      MyLib
+      Day0
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -67,7 +70,12 @@ library
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
-    build-depends:    base ^>=4.21.0.0
+    build-depends:    
+      base ^>=4.21.0.0,
+      text,
+      containers,
+      megaparsec,
+      lens
 
     -- Directories containing source files.
     hs-source-dirs:   src

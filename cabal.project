@@ -1,0 +1,5 @@
+packages: aoc2025.cabal
+
+package *
+  optimization: False
+
