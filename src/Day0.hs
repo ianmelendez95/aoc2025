@@ -24,7 +24,14 @@ accumSum :: Int -> [Int] -> [Int]
 accumSum = scanl (+)
 
 moveDial' :: Int -> Int -> (Int, Int)
-moveDial' start delta = undefined
+moveDial' start delta 
+  | next_raw < 0 = undefined
+  | next_raw >= 100 = 
+     let (q, r) = next_raw `quotRem` 100
+      in (r, q)
+  | otherwise = (next_raw, 0)
+  where 
+    next_raw = start + delta
 
 moveDial :: Int -> Int -> Int
 moveDial start delta 

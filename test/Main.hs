@@ -17,7 +17,13 @@ import Test.Hspec
 main :: IO ()
 main = hspec $ do
   describe "Day0" $ do 
-    it "moveDial" $ do 
+    it "moveDial - 50 + 5" $ do 
       let res = moveDial' 50 5
-      res `shouldBe` (45, 0)
+      res `shouldBe` (55, 0)
+    it "moveDial - 50 + 55" $ do 
+      let res = moveDial' 50 55
+      res `shouldBe` (5, 1)
+    it "moveDial - 50 + 200" $ do 
+      let res = moveDial' 50 200
+      res `shouldBe` (50, 2)
 
