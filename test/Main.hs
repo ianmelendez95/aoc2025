@@ -39,6 +39,9 @@ main = hspec $ do
       it "50 - 50" $ do 
         let res = moveDial' 50 (-50)
         res `shouldBe` (0, 1)
+      it "0 - 5" $ do 
+        let res = moveDial' 0 (-5)
+        res `shouldBe` (95, 0)
 
     describe "doMoves" $ do 
       it "-68" $ do 
@@ -47,6 +50,9 @@ main = hspec $ do
       it "-68 -30 48" $ do 
         let res = doMoves [-68, -30, 48]
         res `shouldBe` (0, 2)
+      it "-68 -30 48 -5" $ do 
+        let res = doMoves [-68, -30, 48, -5]
+        res `shouldBe` (95, 2)
       it "-68 -30 48 -5 60" $ do 
         let res = doMoves [-68, -30, 48, -5, 60]
         res `shouldBe` (55, 3)

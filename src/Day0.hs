@@ -7,18 +7,18 @@ import Data.Text.Read
 import Debug.Trace (traceShowId)
 
 readInput :: IO T.Text
--- readInput = TIO.readFile "src/Day0/short.txt" -- 3
-readInput = TIO.readFile "src/Day0/full.txt" -- 1097
+readInput = TIO.readFile "src/Day0/short.txt" -- 3
+-- readInput = TIO.readFile "src/Day0/full.txt" -- 1097
 
 soln :: IO () 
 soln = do 
   content <- readInput
   let nums = map readLine (T.lines content)
-      accum_sum = scanl moveDial 50 nums
+      -- accum_sum = scanl moveDial 50 nums
   -- print nums
   -- print accum_sum 
   -- TIO.putStrLn content
-  print $ length $ filter (==0) accum_sum
+  print $ doMoves nums
 
 doMoves :: [Int] -> (Int, Int)
 doMoves = foldl' doMove (50, 0)
@@ -32,7 +32,7 @@ moveDial' :: Int -> Int -> (Int, Int)
 moveDial' start delta 
   | next_raw < 0 = 
      let (q, r) = next_raw `quotRem` 100
-      in (r + 100, (abs q) + 1)
+      in (r + 100, (abs q) + (if start == 0 then 0 else 1))
   | next_raw >= 100 = 
      let (q, r) = next_raw `quotRem` 100
       in (r, q)
