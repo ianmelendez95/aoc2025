@@ -1,4 +1,4 @@
-module Day0 where 
+module Day0 (soln, moveDial') where 
 
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
@@ -22,6 +22,9 @@ soln = do
 
 accumSum :: Int -> [Int] -> [Int]
 accumSum = scanl (+)
+
+moveDial' :: Int -> Int -> (Int, Int)
+moveDial' start delta = undefined
 
 moveDial :: Int -> Int -> Int
 moveDial start delta 

@@ -112,4 +112,7 @@ test-suite aoc2025-test
     -- Test dependencies.
     build-depends:
         base ^>=4.21.0.0,
-        aoc2025
+        aoc2025,
+        hspec,
+        hspec-contrib
+
