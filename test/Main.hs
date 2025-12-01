@@ -1,6 +1,6 @@
 module Main (main) where
 
-import Day0 (moveDial', doMoves, doMoves') 
+import Day0 (moveDial', doMoves, doMoves', doMovesState, doMovesState') 
 import Test.Hspec
   ( Expectation,
     SpecWith (..),
@@ -63,5 +63,27 @@ main = hspec $ do
       it "0 200 -1" $ do 
         let res = doMoves' 0 [200, -1]
         res `shouldBe` (99, 2)
+    
+    describe "moveDialState" $ do 
+      it "-68" $ do 
+        let res = doMovesState [-68]
+        res `shouldBe` (82, 1)
+      it "-68 -30 48" $ do 
+        let res = doMovesState [-68, -30, 48]
+        res `shouldBe` (0, 2)
+      it "-68 -30 48 -5" $ do 
+        let res = doMovesState [-68, -30, 48, -5]
+        res `shouldBe` (95, 2)
+      it "-68 -30 48 -5 60" $ do 
+        let res = doMovesState [-68, -30, 48, -5, 60]
+        res `shouldBe` (55, 3)
+
+      it "0 200" $ do 
+        let res = doMovesState' 0 [200]
+        res `shouldBe` (0, 2)
+      it "0 200 -1" $ do 
+        let res = doMovesState' 0 [200, -1]
+        res `shouldBe` (99, 2)
+      
 
 
