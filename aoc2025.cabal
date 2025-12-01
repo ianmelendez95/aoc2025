@@ -75,7 +75,11 @@ library
       text,
       containers,
       megaparsec,
-      lens
+      lens,
+      unordered-containers,
+      vector,
+      array,
+      bytestring
 
     -- Directories containing source files.
     hs-source-dirs:   src
