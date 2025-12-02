@@ -32,17 +32,14 @@ doMoves' start = foldl' doMove (start, 0)
        in (next, passes + next_passes)
 
 moveDial' :: Int -> Int -> (Int, Int)
-moveDial' start delta
-  | next_raw < 0 =
-      let (q, r) = next_raw `quotRem` 100
-       in (r `mod` 100, abs q + (if start == 0 then 0 else 1))
-  | next_raw >= 100 =
-      let (q, r) = next_raw `quotRem` 100
-       in (r, q)
-  | next_raw == 0 = (0, 1)
-  | otherwise = (next_raw, 0)
-  where
-    next_raw = start + delta
+moveDial' start delta =
+  let next_raw = start + delta
+      next_pos = next_raw `mod` 100
+      next_zeros = 
+        if next_raw > 0 
+          then next_raw `div` 100
+          else abs (next_raw `quot` 100) + (if start == 0 then 0 else 1)
+   in (next_pos, next_zeros)
 
 readLine :: T.Text -> Int
 readLine line =
