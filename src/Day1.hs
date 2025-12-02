@@ -3,23 +3,35 @@ module Day1 where
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
 import Data.Text.Read
+import Data.List (isPrefixOf)
 
-readInput :: IO T.Text
-readInput = TIO.readFile "src/Day1/short.txt" -- 
--- readInput = TIO.readFile "src/Day1/full.txt" -- 
+soln :: FilePath -> IO Int
+soln file = sumRepeatsInTxt <$> TIO.readFile file
 
-soln :: IO ()
-soln = do
-  content <- readInput
+sumRepeatsInTxt :: T.Text -> Int
+sumRepeatsInTxt content = 
   let ranges = readLine content
-  -- accum_sum = scanl moveDial 50 nums
-  -- print nums
-  -- print accum_sum
-  -- TIO.putStrLn content
-  mapM_ (\(start, end) -> print $ take 5 [start..end]) ranges
+   in sum $ map sumRepeats ranges
+
+sumRepeats :: (Int, Int) -> Int
+sumRepeats (s, e) = sum $ filter isRepeat [s..e]
 
 isRepeat :: Int -> Bool
-isRepeat = undefined
+isRepeat = isRepeatChars . show
+
+isRepeatChars :: [Char] -> Bool
+isRepeatChars cs = any (checkRepeats cs) (substrings cs)
+
+checkRepeats :: [Char] -> [Char] -> Bool
+checkRepeats [] _ = True
+checkRepeats str sub_str = 
+  sub_str `isPrefixOf` str && checkRepeats sub_str (drop (length sub_str) str)
+
+substrings :: [Char] -> [[Char]]
+substrings str = 
+  let len = length str
+      divisors = filter (\n -> len `mod` n == 0) [1..(len `div` 2)]
+   in map (`take` str) divisors
 
 readLine :: T.Text -> [(Int, Int)]
 readLine text = map splitDelim $ T.split (==',') text

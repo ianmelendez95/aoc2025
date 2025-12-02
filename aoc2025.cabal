@@ -137,5 +137,6 @@ test-suite aoc2025-test
         base ^>=4.21.0.0,
         aoc2025,
         hspec,
-        hspec-contrib
+        hspec-contrib,
+        text
 
