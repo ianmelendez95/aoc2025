@@ -16,7 +16,10 @@ soln = do
   -- print nums
   -- print accum_sum
   -- TIO.putStrLn content
-  mapM_ print ranges
+  mapM_ (\(start, end) -> print $ take 5 [start..end]) ranges
+
+isRepeat :: Int -> Bool
+isRepeat = undefined
 
 readLine :: T.Text -> [(Int, Int)]
 readLine text = map splitDelim $ T.split (==',') text

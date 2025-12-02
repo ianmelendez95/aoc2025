@@ -117,7 +117,8 @@ test-suite aoc2025-test
     default-language: GHC2024
 
     -- Modules included in this executable, other than Main.
-    -- other-modules:
+    other-modules:
+      Test.Day0
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
