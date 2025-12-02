@@ -5,9 +5,34 @@ import Data.Text.IO qualified as TIO
 import Data.Text.Read
 import Data.List (isPrefixOf)
 import Data.List.Split (chunksOf)
+import Control.Concurrent.Async (withAsync, wait, mapConcurrently)
+
+solnAsync :: FilePath -> IO Int
+solnAsync file = withAsync (soln file) wait
 
 soln :: FilePath -> IO Int
-soln file = sumRepeatsInTxt <$> TIO.readFile file
+soln file = do 
+  ranges <- readLine <$> TIO.readFile file
+  let (ranges1, ranges2) = splitAt (length ranges `div` 2) ranges
+  -- chunk_sums :: [[Int]]
+  res <- withAsync (printAndReturn $ sum $ map sumRepeats ranges1) $ \s1P -> do
+            putStrLn "TRACE: Started range 1"
+            withAsync (printAndReturn $ sum $ map sumRepeats ranges2) $ \s2P -> do
+              putStrLn "TRACE: Started range 2"
+              s1 <- wait s1P
+              s2 <- wait s2P
+              putStrLn "TRACE: DONE!"
+              pure $ s1 + s2
+  putStrLn "TRACE: Actually done"
+  pure res
+
+printAndReturn :: Int -> IO Int
+printAndReturn x = print x >> pure x
+  
+      
+  -- chunk_sums <- mapConcurrently (pure . map sumRepeats) range_chunks
+  -- print $ sum $ map sum chunk_sums
+  -- sumRepeatsInTxt <$> TIO.readFile file
 
 sumRepeatsInTxt :: T.Text -> Int
 sumRepeatsInTxt content = 

@@ -58,8 +58,6 @@ executable aoc2025
     -- Import common warning flags.
     import:           warnings
 
-    ghc-options:      -O0
-
     -- .hs or .lhs file containing the Main module.
     main-is:          Main.hs
 
@@ -102,7 +100,8 @@ library
       array,
       bytestring,
       mtl,
-      split
+      split,
+      async
 
     -- Directories containing source files.
     hs-source-dirs:   src
@@ -113,6 +112,8 @@ library
 test-suite aoc2025-test
     -- Import common warning flags.
     import:           warnings
+
+    ghc-options:  -threaded +RTS -N4
 
     -- Base language which the package is written in.
     default-language: GHC2024

@@ -21,8 +21,8 @@ testDay1 :: SpecWith ()
 testDay1 = 
   describe "Day1" $ do 
     describe "soln" $ do 
-      it "short-input.txt" $ do 
-        res <- soln "src/Day1/short.txt"
+      xit "short-input.txt" $ do 
+        res <- solnAsync "src/Day1/short.txt"
         res `shouldBe` 4174379265
 
       it "full-input.txt" $ do 

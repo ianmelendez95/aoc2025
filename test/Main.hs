@@ -5,7 +5,11 @@ import Test.Day1 (testDay1)
 import Test.Hspec
   ( hspec,
   )
+import Control.Concurrent
 
 main :: IO ()
-main = hspec $ do
-  testDay1
+main = do 
+  n <- getNumCapabilities 
+  putStrLn $ "THREADS: " ++ show n
+  hspec $ do
+    testDay1
