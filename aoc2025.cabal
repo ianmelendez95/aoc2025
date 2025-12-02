@@ -58,6 +58,8 @@ executable aoc2025
     -- Import common warning flags.
     import:           warnings
 
+    ghc-options:      -threaded +RTS -N4
+
     -- .hs or .lhs file containing the Main module.
     main-is:          Main.hs
 

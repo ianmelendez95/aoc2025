@@ -3,8 +3,8 @@ module Day1 where
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
 import Data.Text.Read
-import Data.List (isPrefixOf)
 import Data.List.Split (chunksOf)
+import Control.Concurrent
 import Control.Concurrent.Async (withAsync, wait, mapConcurrently)
 import Control.Exception (evaluate)
 
@@ -14,9 +14,12 @@ solnAsync file = withAsync (soln file) wait
 soln :: FilePath -> IO Int
 soln file = do 
   ranges <- readLine <$> TIO.readFile file
-  let (ranges1, ranges2) = splitAt (length ranges `div` 2) ranges
+  num_threads <- getNumCapabilities
+  putStrLn $ "I've got " ++ show num_threads ++ " threads, and I'll use " ++ show num_threads ++ " threads!"
+  let range_chunks = chunksOf (length ranges `div` num_threads) ranges
   -- chunk_sums :: [[Int]]
-  sum <$> mapConcurrently (\chunk -> evaluate . sum $ map sumRepeats chunk) [ranges1, ranges2]
+  print $ map length range_chunks
+  sum <$> mapConcurrently (evaluate . sum . map sumRepeats) range_chunks
   -- withAsync (evaluate . sum $ map sumRepeats ranges1) $ \s1P -> do
   --    withAsync (evaluate . sum $ map sumRepeats ranges2) $ \s2P -> do
   --      s1 <- wait s1P
