@@ -4,6 +4,7 @@ import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
 import Data.Text.Read
 import Data.List (isPrefixOf)
+import Data.List.Split (chunksOf)
 
 soln :: FilePath -> IO Int
 soln file = sumRepeatsInTxt <$> TIO.readFile file
@@ -23,9 +24,7 @@ isRepeatChars :: [Char] -> Bool
 isRepeatChars cs = any (checkRepeats cs) (substrings cs)
 
 checkRepeats :: [Char] -> [Char] -> Bool
-checkRepeats [] _ = True
-checkRepeats str sub_str = 
-  sub_str `isPrefixOf` str && checkRepeats (drop (length sub_str) str) sub_str
+checkRepeats str sub_str = all (sub_str ==) $ chunksOf (length sub_str) str
 
 substrings :: [Char] -> [[Char]]
 substrings str = 

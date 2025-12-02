@@ -27,7 +27,8 @@ testDay1 =
 
       it "full-input.txt" $ do 
         res <- soln "src/Day1/full.txt"
-        putStrLn $ "Solution: " ++ show res
+        -- putStrLn $ "Solution: " ++ show res
+        res `shouldBe` 50793864718
 
     describe "sumRepeats" $ do 
       it "2121212118-2121212124" $ do 
