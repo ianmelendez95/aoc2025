@@ -7,6 +7,7 @@ import Test.Hspec
     describe,
     expectationFailure,
     it,
+    xit,
     shouldBe,
     shouldSatisfy,
     xdescribe,
@@ -22,11 +23,15 @@ testDay1 =
     describe "soln" $ do 
       it "short-input.txt" $ do 
         res <- soln "src/Day1/short.txt"
-        res `shouldBe` 1227775554
+        res `shouldBe` 4174379265
 
       it "full-input.txt" $ do 
         res <- soln "src/Day1/full.txt"
         putStrLn $ "Solution: " ++ show res
+
+    describe "sumRepeats" $ do 
+      it "2121212118-2121212124" $ do 
+        sumRepeats (2121212118, 2121212124) `shouldBe` 2121212121
 
     describe "isRepeat" $ do 
       it "11" $ do 
@@ -37,6 +42,16 @@ testDay1 =
 
       it "12-21" $ do
         noRepeats [12..21]
+
+      it "95-115" $ do 
+        noRepeats [95..98]
+        isRepeat 99 `shouldBe` True
+        noRepeats [100..110]
+        isRepeat 11 `shouldBe` True
+        noRepeats [112..115]
+
+      it "2121212118-2121212124" $ do 
+        isRepeat 2121212121
 
       -- 1188511880-1188511890
       -- 1188511885

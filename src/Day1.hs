@@ -25,7 +25,7 @@ isRepeatChars cs = any (checkRepeats cs) (substrings cs)
 checkRepeats :: [Char] -> [Char] -> Bool
 checkRepeats [] _ = True
 checkRepeats str sub_str = 
-  sub_str `isPrefixOf` str && checkRepeats sub_str (drop (length sub_str) str)
+  sub_str `isPrefixOf` str && checkRepeats (drop (length sub_str) str) sub_str
 
 substrings :: [Char] -> [[Char]]
 substrings str = 
