@@ -2,5 +2,4 @@ packages: aoc2025.cabal
 
 package *
   optimization: False
-  ghc-options: -threaded
 

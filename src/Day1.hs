@@ -6,6 +6,7 @@ import Data.Text.Read
 import Data.List (isPrefixOf)
 import Data.List.Split (chunksOf)
 import Control.Concurrent.Async (withAsync, wait, mapConcurrently)
+import Control.Exception (evaluate)
 
 solnAsync :: FilePath -> IO Int
 solnAsync file = withAsync (soln file) wait
@@ -15,16 +16,12 @@ soln file = do
   ranges <- readLine <$> TIO.readFile file
   let (ranges1, ranges2) = splitAt (length ranges `div` 2) ranges
   -- chunk_sums :: [[Int]]
-  res <- withAsync (printAndReturn $ sum $ map sumRepeats ranges1) $ \s1P -> do
-            putStrLn "TRACE: Started range 1"
-            withAsync (printAndReturn $ sum $ map sumRepeats ranges2) $ \s2P -> do
-              putStrLn "TRACE: Started range 2"
-              s1 <- wait s1P
-              s2 <- wait s2P
-              putStrLn "TRACE: DONE!"
-              pure $ s1 + s2
-  putStrLn "TRACE: Actually done"
-  pure res
+  sum <$> mapConcurrently (\chunk -> evaluate . sum $ map sumRepeats chunk) [ranges1, ranges2]
+  -- withAsync (evaluate . sum $ map sumRepeats ranges1) $ \s1P -> do
+  --    withAsync (evaluate . sum $ map sumRepeats ranges2) $ \s2P -> do
+  --      s1 <- wait s1P
+  --      s2 <- wait s2P
+  --      pure $ s1 + s2
 
 printAndReturn :: Int -> IO Int
 printAndReturn x = print x >> pure x
