@@ -35,11 +35,11 @@ moveDial' :: Int -> Int -> (Int, Int)
 moveDial' start delta =
   let next_raw = start + delta
       next_pos = next_raw `mod` 100
-      next_zeros = 
+      zeros = 
         if next_raw > 0 
           then next_raw `div` 100
           else abs (next_raw `quot` 100) + (if start == 0 then 0 else 1)
-   in (next_pos, next_zeros)
+   in (next_pos, zeros)
 
 readLine :: T.Text -> Int
 readLine line =
