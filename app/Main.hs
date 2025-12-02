@@ -1,6 +1,6 @@
 module Main (main) where 
 
-import Day0 qualified as D0
+import Day1
 
 main :: IO ()
-main = D0.soln
+main = soln "src/Day1/full.txt" >>= print
