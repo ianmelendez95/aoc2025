@@ -83,6 +83,7 @@ library
       MyLib
       Day0
       Day1
+      Day3
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -120,6 +121,8 @@ test-suite aoc2025-test
     -- Modules included in this executable, other than Main.
     other-modules:
       Test.Day0
+      Test.Day1
+      Test.Day3
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
