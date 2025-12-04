@@ -25,7 +25,7 @@ test =
     describe "soln" $ do 
       it "short-input.txt" $ do 
         res <- soln "test/Test/Day4/short.txt"
-        res `shouldBe` 0
+        res `shouldBe` 13
 
       xit "full-input.txt" $ do 
         res <- soln "test/Test/Day4/full.txt"

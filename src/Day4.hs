@@ -26,12 +26,15 @@ type Coord = (Int, Int)
 soln :: FilePath -> IO Int
 soln file = do
   roll_map <- readRollMap file
-  pure 0
+  pure $ ableRollCount0 roll_map
 
 readRollMap :: FilePath -> IO RollMap
 readRollMap file = do
   roll_lines <- T.lines <$> TIO.readFile file
   pure $ readRollRows0 roll_lines
+
+ableRollCount0 :: RollMap -> Int
+ableRollCount0 roll_map = length . filter (`ableRoll0` roll_map) $ M.keys roll_map
 
 ableRoll0 :: Coord -> RollMap -> Bool
 ableRoll0 coord roll_map = isRollCoord coord roll_map && adjRolls0 coord roll_map < 4
