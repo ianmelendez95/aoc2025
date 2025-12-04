@@ -23,14 +23,17 @@ soln file = do
 findMaxNum0 :: [Char] -> Int
 findMaxNum0 digits = maximum $ numbers0 digits
 
-takeAny0 :: Int -> [Char] -> Maybe [String]
-takeAny0 0 _ = Just [[]]
-takeAny0 _ [] = Nothing -- ran out, so can't do anything
+-- dodecNums0 :: String -> [Int]
+-- dodecNums0 = map read 
+
+takeAny0 :: Int -> [Char] -> [String]
+takeAny0 0 _ = [[]]
+takeAny0 _ [] = [] -- ran out, so can't do anything
 takeAny0 n (x:xs) = 
   --((x:) <$> takeAny0 (n - 1) xs) ++ takeAny0 n xs
-  let with_x = maybe [] (map (x:)) $ takeAny0 (n - 1) xs
-      without_x = fromMaybe [] $ takeAny0 n xs
-   in Just $ with_x ++ without_x
+  let with_x = (x:) <$> takeAny0 (n - 1) xs
+      without_x = takeAny0 n xs
+   in with_x ++ without_x
 
 numbers0 :: [Char] -> [Int]
 numbers0 [] = []
