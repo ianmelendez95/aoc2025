@@ -34,15 +34,15 @@ test =
 
     describe "ableRoll0" $ do 
       it "(0,0)" $ do 
-        short_roll_map <- readRollMap "test/Test/Day4/short.txt"
+        short_roll_map <- readRollSet "test/Test/Day4/short.txt"
         ableRoll0 (0,0) short_roll_map `shouldBe` False
 
       it "(0,2)" $ do 
-        short_roll_map <- readRollMap "test/Test/Day4/short.txt"
+        short_roll_map <- readRollSet "test/Test/Day4/short.txt"
         ableRoll0 (0,2) short_roll_map `shouldBe` True
 
       it "(1,2)" $ do 
-        short_roll_map <- readRollMap "test/Test/Day4/short.txt"
+        short_roll_map <- readRollSet "test/Test/Day4/short.txt"
         ableRoll0 (1,2) short_roll_map `shouldBe` False
         
 
