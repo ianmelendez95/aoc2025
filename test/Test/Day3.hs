@@ -52,7 +52,7 @@ testDay3 =
 
     describe "takeAny0" $ do 
       it "2 1234" $ do 
-        fromJust (takeAny0 2 "1234") `shouldMatchList` ["12", "23", "34", "13", "24", "34"]
+        fromJust (takeAny0 2 "1234") `shouldMatchList` ["12", "13", "14", "23", "24", "34"]
         
 
 
