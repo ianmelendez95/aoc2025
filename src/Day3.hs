@@ -2,7 +2,9 @@ module Day3
   ( soln, 
     numbers0,
     findMaxNum0,
-    takeAny0
+    takeAny0,
+    dodecNums0,
+    dodecMax0
   ) 
   where
 
@@ -23,8 +25,11 @@ soln file = do
 findMaxNum0 :: [Char] -> Int
 findMaxNum0 digits = maximum $ numbers0 digits
 
--- dodecNums0 :: String -> [Int]
--- dodecNums0 = map read 
+dodecMax0 :: String -> Int
+dodecMax0 = maximum . dodecNums0
+
+dodecNums0 :: String -> [Int]
+dodecNums0 = map read . takeAny0 12
 
 takeAny0 :: Int -> [Char] -> [String]
 takeAny0 0 _ = [[]]
