@@ -14,7 +14,7 @@ import Test.Hspec
     expectationFailure,
     shouldMatchList
   )
-import Day3
+import Day3 
 import Data.Text qualified as T
 import Data.Text qualified as TIO
 import Data.Maybe (fromJust)
@@ -86,6 +86,10 @@ testDay3 =
 
       it "14" $ do
         charsWithPos1 "14" `shouldBe` [(0, '4'), (1, '1')]
+
+    describe "withEach" $ do 
+      it "1234" $ do 
+        withEach0 (\x xs -> Just (x : xs)) "1234" `shouldBe` ["1234","2134","3214","4321"]
 
 
 

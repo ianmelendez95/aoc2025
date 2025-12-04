@@ -8,6 +8,7 @@ module Day3
     dodecMax1,
     buildBigNum1,
     charsWithPos1,
+    withEach0
   ) 
   where
 
@@ -16,7 +17,7 @@ import Data.Text.IO qualified as TIO
 import Data.Text.Read
 import Data.List (isPrefixOf, sortBy)
 import Data.List.Split (chunksOf)
-import Data.Maybe (fromMaybe, fromJust)
+import Data.Maybe (fromMaybe, fromJust, catMaybes)
 import Text.Read (readMaybe)
 import Control.Applicative (liftA2)
 import Data.Ord (Down (..), comparing)
@@ -36,9 +37,19 @@ buildBigNum1 0 _ = Just []
 buildBigNum1 _ [] = Nothing
 buildBigNum1 n ((c_n, c):cs) = 
   let cs_after_c = filter (\(c_n', _) -> c_n' < c_n) cs
-   in case buildBigNum1 (n - 1) (filter (\(c_n', _) -> c_n' >= (n - 1)) (traceLog cs_after_c)) of 
+      cs_with_enough = filter (\(c_n', _) -> c_n' >= (n - 1)) cs_after_c
+   in case buildBigNum1 (n - 1) cs_with_enough of 
         Nothing -> buildBigNum1 n cs
         Just big_boy -> Just (c : big_boy)
+
+withEach0 :: forall a b. (a -> [a] -> Maybe b) -> [a] -> [b]
+withEach0 f = catMaybes . go []
+  where 
+    go :: [a] -> [a] -> [Maybe b]
+    go _ [] = []
+    go ls (r:rs) = 
+      let r' = f r (ls ++ rs) 
+       in r' : go (r:ls) rs
 
 traceLog :: Show a => a -> a
 traceLog x = trace ("\nTRACE'" ++ show x ++ "'\n") x 
