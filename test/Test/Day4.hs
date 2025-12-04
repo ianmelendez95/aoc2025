@@ -34,16 +34,16 @@ test =
 
     describe "ableRoll0" $ do 
       it "(0,0)" $ do 
-        short_roll_map <- readRollSet "test/Test/Day4/short.txt"
-        ableRoll0 (0,0) short_roll_map `shouldBe` False
+        short_roll_set <- readRollSet "test/Test/Day4/short.txt"
+        ableRoll0 (0,0) short_roll_set `shouldBe` False
 
       it "(0,2)" $ do 
-        short_roll_map <- readRollSet "test/Test/Day4/short.txt"
-        ableRoll0 (0,2) short_roll_map `shouldBe` True
+        short_roll_set <- readRollSet "test/Test/Day4/short.txt"
+        ableRoll0 (0,2) short_roll_set `shouldBe` True
 
       it "(1,2)" $ do 
-        short_roll_map <- readRollSet "test/Test/Day4/short.txt"
-        ableRoll0 (1,2) short_roll_map `shouldBe` False
+        short_roll_set <- readRollSet "test/Test/Day4/short.txt"
+        ableRoll0 (1,2) short_roll_set `shouldBe` False
         
 
     describe "adjCoords" $ do 

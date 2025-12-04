@@ -26,8 +26,8 @@ type Coord = (Int, Int)
 
 soln :: FilePath -> IO Int
 soln file = do
-  roll_map <- readRollSet file
-  pure $ ableRollCount0 roll_map
+  roll_set <- readRollSet file
+  pure $ ableRollCount0 roll_set
 
 readRollSet :: FilePath -> IO RollSet
 readRollSet file = do
@@ -37,13 +37,13 @@ readRollSet file = do
 -- pruneRolls0 :: RollSet -> RollSet
 
 ableRollCount0 :: RollSet -> Int
-ableRollCount0 roll_map = length . filter (`ableRoll0` roll_map) $ S.toList roll_map
+ableRollCount0 roll_set = length . filter (`ableRoll0` roll_set) $ S.toList roll_set
 
 ableRoll0 :: Coord -> RollSet -> Bool
-ableRoll0 coord roll_map = isRollCoord coord roll_map && adjRolls0 coord roll_map < 4
+ableRoll0 coord roll_set = isRollCoord coord roll_set && adjRolls0 coord roll_set < 4
 
 adjRolls0 :: Coord -> RollSet -> Int
-adjRolls0 coord roll_map = length . filter (`isRollCoord` roll_map) $ adjCoords0 coord
+adjRolls0 coord roll_set = length . filter (`isRollCoord` roll_set) $ adjCoords0 coord
 
 isRollCoord :: Coord -> RollSet -> Bool
 isRollCoord = S.member 
