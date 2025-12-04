@@ -27,14 +27,23 @@ type Coord = (Int, Int)
 soln :: FilePath -> IO Int
 soln file = do
   roll_set <- readRollSet file
-  pure $ ableRollCount0 roll_set
+  let roll_set' = pruneRolls0 roll_set
+  pure $ S.size roll_set - S.size roll_set'
 
 readRollSet :: FilePath -> IO RollSet
 readRollSet file = do
   roll_lines <- T.lines <$> TIO.readFile file
   pure $ readRollRows0 roll_lines
 
--- pruneRolls0 :: RollSet -> RollSet
+pruneRolls0 :: RollSet -> RollSet
+pruneRolls0 roll_set = 
+  let roll_set' = pruneRollsOnce0 roll_set
+   in if S.size roll_set == S.size roll_set'
+        then roll_set
+        else pruneRolls0 roll_set'
+
+pruneRollsOnce0 :: RollSet -> RollSet
+pruneRollsOnce0 roll_set = S.fromList . filter (`ableRoll0` roll_set) . S.toList $ roll_set
 
 ableRollCount0 :: RollSet -> Int
 ableRollCount0 roll_set = length . filter (`ableRoll0` roll_set) $ S.toList roll_set
@@ -56,5 +65,11 @@ readRollRows0 row_txts = S.fromList . concat $ zipWith readRollRow0 [0..] row_tx
 
 readRollRow0 :: Int -> T.Text -> [Coord]
 readRollRow0 row_n = map fst . filter snd . zipWith (\col_n is_roll -> ((row_n, col_n), is_roll)) [0..] . map (== '@') . T.unpack
+
+-- showRollSet :: Int -> Int -> RollSet -> IO ()
+-- showRollSet rows cols = 
+--   where 
+--     showRollRow :: Int -> Int -> RollSet -> IO ()
+--     showRollRow row_n cols = 
 
 

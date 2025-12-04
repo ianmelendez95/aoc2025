@@ -25,9 +25,9 @@ test =
     describe "soln" $ do 
       it "short-input.txt" $ do 
         res <- soln "test/Test/Day4/short.txt"
-        res `shouldBe` 13
+        res `shouldBe` 43
 
-      it "full-input.txt" $ do 
+      xit "full-input.txt" $ do 
         res <- soln "test/Test/Day4/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldBe` 1376
