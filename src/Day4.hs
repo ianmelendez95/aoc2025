@@ -3,7 +3,9 @@ module Day4
     readRollSet,
     adjCoords0,
     ableRoll0,
-    showRollSet
+    showRollSet,
+    pruneRollsOnce0,
+    ableRollCount0
   ) 
   where
 
@@ -44,7 +46,7 @@ pruneRolls0 roll_set =
         else pruneRolls0 roll_set'
 
 pruneRollsOnce0 :: RollSet -> RollSet
-pruneRollsOnce0 roll_set = S.fromList . filter (`ableRoll0` roll_set) . S.toList $ roll_set
+pruneRollsOnce0 roll_set = S.fromList . filter (not . (`ableRoll0` roll_set)) . S.toList $ roll_set
 
 ableRollCount0 :: RollSet -> Int
 ableRollCount0 roll_set = length . filter (`ableRoll0` roll_set) $ S.toList roll_set

@@ -48,6 +48,12 @@ test =
               \@.@.@@@.@."
         showRollSet 9 9 short_roll_set `shouldBe` expected
 
+    -- describe "pruneRollsOnce0" $ do
+    --   it "prune 1 => -13" $ do 
+    --     short_roll_set <- readRollSet "test/Test/Day4/short.txt"
+    --     let pruned_1 = ableRollCount0 . pruneRollsOnce0 $ short_roll_set
+    --     pruned_1 `shouldBe` 
+
     describe "ableRoll0" $ do 
       it "(0,0)" $ do 
         short_roll_set <- readRollSet "test/Test/Day4/short.txt"
