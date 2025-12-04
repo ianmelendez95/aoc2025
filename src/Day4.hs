@@ -2,14 +2,15 @@ module Day4
   ( soln, 
     readRollSet,
     adjCoords0,
-    ableRoll0
+    ableRoll0,
+    showRollSet
   ) 
   where
 
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
 import Data.Text.Read
-import Data.List (isPrefixOf, sortBy)
+import Data.List (isPrefixOf, sortBy, intersperse, intercalate)
 import Data.List.Split (chunksOf)
 import Data.Maybe (fromMaybe, fromJust)
 import Text.Read (readMaybe)
@@ -66,10 +67,33 @@ readRollRows0 row_txts = S.fromList . concat $ zipWith readRollRow0 [0..] row_tx
 readRollRow0 :: Int -> T.Text -> [Coord]
 readRollRow0 row_n = map fst . filter snd . zipWith (\col_n is_roll -> ((row_n, col_n), is_roll)) [0..] . map (== '@') . T.unpack
 
--- showRollSet :: Int -> Int -> RollSet -> IO ()
--- showRollSet rows cols = 
---   where 
---     showRollRow :: Int -> Int -> RollSet -> IO ()
---     showRollRow row_n cols = 
+showRollSet :: Int -> Int -> RollSet -> String
+showRollSet rows cols set = intercalate "\n" . map showRollRow $ [0..rows]
+  where 
+    showRollRow :: Int -> String
+    showRollRow r = map (\c -> if S.member (r, c) set then '@' else '.') [0..cols]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

@@ -32,6 +32,22 @@ test =
         putStrLn $ "Solution: " ++ show res
         res `shouldBe` 1376
 
+    describe "showRollSet" $ do 
+      it "shows initial" $ do 
+        short_roll_set <- readRollSet "test/Test/Day4/short.txt"
+        let expected = 
+              "..@@.@@@@.\n\
+              \@@@.@.@.@@\n\
+              \@@@@@.@.@@\n\
+              \@.@@@@..@.\n\
+              \@@.@@@@.@@\n\
+              \.@@@@@@@.@\n\
+              \.@.@.@.@@@\n\
+              \@.@@@.@@@@\n\
+              \.@@@@@@@@.\n\
+              \@.@.@@@.@."
+        showRollSet 9 9 short_roll_set `shouldBe` expected
+
     describe "ableRoll0" $ do 
       it "(0,0)" $ do 
         short_roll_set <- readRollSet "test/Test/Day4/short.txt"
