@@ -85,6 +85,11 @@ library
       Day1
       Day3
 
+    default-extensions:
+      OverloadedStrings
+      TupleSections
+
+
     -- Modules included in this library but not exported.
     -- other-modules:
 
