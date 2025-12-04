@@ -1,6 +1,8 @@
 module Day4 
   ( soln, 
-    adjCoords0
+    readRollMap,
+    adjCoords0,
+    ableRoll0
   ) 
   where
 
@@ -23,13 +25,22 @@ type Coord = (Int, Int)
 
 soln :: FilePath -> IO Int
 soln file = do
-  roll_lines <- T.lines <$> TIO.readFile file
-  mapM_ print . M.toList $ readRollRows0 roll_lines
-  let roll_map = readRollRows0 roll_lines
+  roll_map <- readRollMap file
   pure 0
 
+readRollMap :: FilePath -> IO RollMap
+readRollMap file = do
+  roll_lines <- T.lines <$> TIO.readFile file
+  pure $ readRollRows0 roll_lines
+
 ableRoll0 :: Coord -> RollMap -> Bool
-ableRoll0 (r, c) roll_map = undefined
+ableRoll0 coord roll_map = isRollCoord coord roll_map && adjRolls0 coord roll_map < 4
+
+adjRolls0 :: Coord -> RollMap -> Int
+adjRolls0 coord roll_map = length . filter (`isRollCoord` roll_map) $ adjCoords0 coord
+
+isRollCoord :: Coord -> RollMap -> Bool
+isRollCoord = M.findWithDefault False
 
 adjCoords0 :: Coord -> [Coord]
 adjCoords0 coord@(r, c) = concatMap (filter (coord /=). zip [r-1..r+1] . repeat) [c-1..c+1]
