@@ -25,7 +25,7 @@ testDay3 =
     describe "soln" $ do 
       it "short-input.txt" $ do 
         res <- soln "test/Test/Day3/short.txt"
-        res `shouldBe` 357
+        res `shouldBe` 3121910778619
 
       xit "full-input.txt" $ do 
         res <- soln "test/Test/Day3/full.txt"
@@ -58,6 +58,9 @@ testDay3 =
       it "987654321111111" $ do 
         dodecMax0 "987654321111111" `shouldBe` 987654321111
         
+    describe "charsWithPos1" $ do 
+      it "1234" $ do
+        charsWithPos1 "1234" `shouldBe` [(0, '4'), (1, '3'), (2, '2'), (3, '1')]
 
 
 

@@ -4,23 +4,28 @@ module Day3
     findMaxNum0,
     takeAny0,
     dodecNums0,
-    dodecMax0
+    dodecMax0,
+    charsWithPos1,
   ) 
   where
 
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
 import Data.Text.Read
-import Data.List (isPrefixOf)
+import Data.List (isPrefixOf, sortBy)
 import Data.List.Split (chunksOf)
 import Data.Maybe (fromMaybe)
 import Text.Read (readMaybe)
 import Control.Applicative (liftA2)
+import Data.Ord (Down (..), comparing)
 
 soln :: FilePath -> IO Int
 soln file = do
   banks <- T.lines <$> TIO.readFile file
-  pure $ sum (map (findMaxNum0 . T.unpack) banks)
+  pure $ sum (map (dodecMax0 . T.unpack) banks)
+
+charsWithPos1 :: [Char] -> [(Int, Char)]
+charsWithPos1 = sortBy (comparing (Down . snd)) . zip [0..] . reverse
 
 findMaxNum0 :: [Char] -> Int
 findMaxNum0 digits = maximum $ numbers0 digits
