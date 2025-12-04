@@ -32,5 +32,9 @@ test =
         putStrLn $ "Solution: " ++ show res
         res `shouldBe` 17332
 
+    describe "adjCoords" $ do 
+      it "res" $ do 
+        adjCoords0 (0,0) `shouldMatchList` [(-1,-1), (-1,0), (-1,1), (0, -1), (0, 1), (1,-1), (1,0), (1,1)]
+
 
 
