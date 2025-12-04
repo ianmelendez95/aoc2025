@@ -5,6 +5,8 @@ module Day3
     takeAny0,
     dodecNums0,
     dodecMax0,
+    dodecMax1,
+    buildBigNum1,
     charsWithPos1,
   ) 
   where
@@ -14,15 +16,32 @@ import Data.Text.IO qualified as TIO
 import Data.Text.Read
 import Data.List (isPrefixOf, sortBy)
 import Data.List.Split (chunksOf)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, fromJust)
 import Text.Read (readMaybe)
 import Control.Applicative (liftA2)
 import Data.Ord (Down (..), comparing)
+
+import Debug.Trace (trace)
 
 soln :: FilePath -> IO Int
 soln file = do
   banks <- T.lines <$> TIO.readFile file
   pure $ sum (map (dodecMax0 . T.unpack) banks)
+
+dodecMax1 :: [Char] -> Int
+dodecMax1 = read . fromJust . buildBigNum1 12 . charsWithPos1
+
+buildBigNum1 :: Int -> [(Int, Char)] -> Maybe [Char]
+buildBigNum1 0 _ = Just []
+buildBigNum1 _ [] = Nothing
+buildBigNum1 n ((c_n, c):cs) = 
+  let cs_after_c = filter (\(c_n', _) -> c_n' < c_n) cs
+   in case buildBigNum1 (n - 1) (filter (\(c_n', _) -> c_n' >= (n - 1)) (traceLog cs_after_c)) of 
+        Nothing -> buildBigNum1 n cs
+        Just big_boy -> Just (c : big_boy)
+
+traceLog :: Show a => a -> a
+traceLog x = trace ("\nTRACE'" ++ show x ++ "'\n") x 
 
 charsWithPos1 :: [Char] -> [(Int, Char)]
 charsWithPos1 = sortBy (comparing (Down . snd)) . zip [0..] . reverse

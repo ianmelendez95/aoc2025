@@ -33,11 +33,7 @@ testDay3 =
         res `shouldBe` 17332
 
       
-      -- 987654321111111
-      -- 811111111111119
-      -- 234234234234278
-      -- 818181911112111
-    describe "findMaxNum0" $ do
+    describe "findMaxNum" $ do
       it "987654321111111" $ do 
         findMaxNum0 "987654321111111" `shouldBe` 98
 
@@ -54,13 +50,42 @@ testDay3 =
       it "2 1234" $ do 
         takeAny0 2 "1234" `shouldMatchList` ["12", "13", "14", "23", "24", "34"]
 
-    describe "dodecMax0" $ do 
+    describe "dodecMax" $ do 
       it "987654321111111" $ do 
         dodecMax0 "987654321111111" `shouldBe` 987654321111
+        dodecMax1 "987654321111111" `shouldBe` 987654321111
+
+      it "811111111111119" $ do 
+        dodecMax0 "811111111111119" `shouldBe` 811111111119
+        dodecMax1 "811111111111119" `shouldBe` 811111111119
+
+      it "234234234234278" $ do 
+        dodecMax0 "234234234234278" `shouldBe` 434234234278
+        dodecMax1 "234234234234278" `shouldBe` 434234234278
+
+      it "818181911112111" $ do 
+        dodecMax0 "818181911112111" `shouldBe` 888911112111
+        dodecMax1 "818181911112111" `shouldBe` 888911112111
+
+    describe "buildBigNum" $ do 
+      it "987654321111111" $ do 
+        buildBigNum1 12 (charsWithPos1 "987654321111111") `shouldBe` Just "987654321111"
+
+      it "818181911112111" $ do 
+        buildBigNum1 12 (charsWithPos1 "818181911112111") `shouldBe` Just "888911112111"
+
+      it "14" $ do 
+        buildBigNum1 2 (charsWithPos1 "14") `shouldBe` Just "14"
+
+      it "1" $ do 
+        buildBigNum1 1 (charsWithPos1 "1") `shouldBe` Just "1"
         
     describe "charsWithPos1" $ do 
       it "1234" $ do
         charsWithPos1 "1234" `shouldBe` [(0, '4'), (1, '3'), (2, '2'), (3, '1')]
+
+      it "14" $ do
+        charsWithPos1 "14" `shouldBe` [(0, '4'), (1, '1')]
 
 
 
