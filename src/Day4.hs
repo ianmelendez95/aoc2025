@@ -15,10 +15,20 @@ import Data.Ord (Down (..), comparing)
 
 import Debug.Trace (trace)
 
+import Data.Map qualified as M
+
+type Coord = (Int, Int)
+
 soln :: FilePath -> IO Int
 soln file = do
   roll_lines <- T.lines <$> TIO.readFile file
-  print roll_lines
+  mapM_ print $ readRollRows0 roll_lines
   pure 0
+
+readRollRows0 :: [T.Text] -> [(Coord, Bool)]
+readRollRows0 row_txts = concat $ zipWith readRollRow0 [0..] row_txts
+
+readRollRow0 :: Int -> T.Text -> [(Coord, Bool)]
+readRollRow0 row_n = zipWith (\col_n is_roll -> ((row_n, col_n), is_roll)) [0..] . map (== '@') . T.unpack
 
 
