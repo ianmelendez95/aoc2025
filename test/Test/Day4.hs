@@ -30,7 +30,7 @@ test =
       it "full-input.txt" $ do 
         res <- soln "test/Test/Day4/full.txt"
         putStrLn $ "Solution: " ++ show res
-        -- res `shouldBe` 17332
+        res `shouldBe` 1376
 
     describe "ableRoll0" $ do 
       it "(0,0)" $ do 
