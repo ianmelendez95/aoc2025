@@ -27,10 +27,10 @@ test =
         res <- soln "test/Test/Day4/short.txt"
         res `shouldBe` 43
 
-      xit "full-input.txt" $ do 
+      it "full-input.txt" $ do 
         res <- soln "test/Test/Day4/full.txt"
         putStrLn $ "Solution: " ++ show res
-        res `shouldBe` 1376
+        res `shouldBe` 8587
 
     describe "showRollSet" $ do 
       it "shows initial" $ do 
