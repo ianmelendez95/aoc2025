@@ -29,10 +29,8 @@ soln file = do
       fresh_ingrs = filter (not . isSpoiled0 ranges) ingrs
   pure $ length fresh_ingrs
 
-
-
 isSpoiled0 :: [Range] -> Int -> Bool
-isSpoiled0 rs i = any (i `isBetween`) rs
+isSpoiled0 rs i = not $ any (i `isBetween`) rs
 
 isBetween :: Int -> Range -> Bool
 isBetween i (l, r) = i >= l && i <= r
