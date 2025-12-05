@@ -2,7 +2,8 @@ module Day5
   ( soln, 
     readDbFile,
     readRange,
-    mergeRanges0
+    mergeRanges0,
+    sumRanges0
   ) 
   where
 
@@ -16,21 +17,22 @@ import Text.Read (readMaybe)
 import Control.Applicative (liftA2)
 import Data.Ord (Down (..), comparing)
 
-import Debug.Trace (trace)
-
 import Data.Map qualified as M
 import Data.Set qualified as S
 
-import Debug.Trace (trace)
+-- import Debug.Trace (trace)
 
 type Range = (Int, Int)
 
 soln :: FilePath -> IO Int
 soln file = do
   ls <- T.lines <$> TIO.readFile file
-  let (ranges, ingrs) = readDb ls
-      fresh_ingrs = filter (not . isSpoiled0 ranges) ingrs
-  pure $ length fresh_ingrs
+  let (ranges, _) = readDb ls
+      merged_ranges = mergeRanges0 ranges
+  pure $ sumRanges0 merged_ranges
+
+sumRanges0 :: [Range] -> Int
+sumRanges0 = sum . map (\(s, e) -> e - s + 1)
 
 mergeRanges0 :: [Range] -> [Range]
 mergeRanges0 rs = 
@@ -69,5 +71,6 @@ readRange line =
 readInt :: T.Text -> Int
 readInt = either error fst . decimal
 
-
+trace :: String -> a -> a
+trace _ x = x
 

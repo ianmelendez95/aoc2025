@@ -26,12 +26,16 @@ test =
     describe "soln" $ do 
       it "short-input.txt" $ do 
         res <- soln "test/Test/Day5/short.txt"
-        res `shouldBe` 3
+        res `shouldBe` 14
 
       it "full-input.txt" $ do 
         res <- soln "test/Test/Day5/full.txt"
         putStrLn $ "Solution: " ++ show res
-        res `shouldNotBe` 172
+        res `shouldNotBe` 325400210124724
+
+    describe "sumRanges0" $ do 
+      it "short" $ do 
+        sumRanges0 [(3, 5), (10, 20)] `shouldBe` 3 + 11
 
     describe "mergeRanges0" $ do 
       it "short" $ do 
