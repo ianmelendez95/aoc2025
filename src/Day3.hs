@@ -6,18 +6,20 @@ module Day3
     dodecNums0,
     dodecMax0,
     dodecMax1,
+    dodecMax2,
     buildBigNum1,
     buildBigNum1',
     charsWithPos1,
     withEach0,
-    buildBigNumFinal1
+    buildBigNumFinal1,
+    buildBigNum2
   ) 
   where
 
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
 import Data.Text.Read
-import Data.List (isPrefixOf, sortBy)
+import Data.List (isPrefixOf, sortBy, maximumBy)
 import Data.List.Split (chunksOf)
 import Data.Maybe (fromMaybe, fromJust, catMaybes)
 import Text.Read (readMaybe)
@@ -29,7 +31,16 @@ import Debug.Trace (trace)
 soln :: FilePath -> IO Int
 soln file = do
   banks <- T.lines <$> TIO.readFile file
-  pure $ sum (map (dodecMax0 . T.unpack) banks)
+  pure $ sum (map (dodecMax1 . T.unpack) banks)
+
+dodecMax2 :: [Char] -> Int
+dodecMax2 = read . buildBigNum2 12
+
+buildBigNum2 :: Int -> [Char] -> [Char]
+buildBigNum2 n cs = 
+  let next_possible = take (length cs - n + 1) cs
+      (next_idx, next_digit) = maximumBy (comparing fst) . zip [(1 :: Int)..] $ next_possible
+   in next_digit : drop next_idx cs
 
 dodecMax1 :: [Char] -> Int
 dodecMax1 = buildBigNumFinal1 12 . charsWithPos1

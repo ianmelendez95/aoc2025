@@ -28,7 +28,7 @@ testDay3 =
         res <- soln "test/Test/Day3/short.txt"
         res `shouldBe` 3121910778619
 
-      xit "full-input.txt" $ do 
+      it "full-input.txt" $ do 
         res <- soln "test/Test/Day3/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldBe` 17332
@@ -50,6 +50,19 @@ testDay3 =
     describe "takeAny0" $ do 
       it "2 1234" $ do 
         takeAny0 2 "1234" `shouldMatchList` ["12", "13", "14", "23", "24", "34"]
+
+    describe "dodecMax2" $ do 
+      it "987654321111111" $ do 
+        dodecMax2 "987654321111111" `shouldBe` 987654321111
+
+      it "811111111111119" $ do 
+        dodecMax2 "811111111111119" `shouldBe` 811111111119
+
+      it "234234234234278" $ do 
+        dodecMax2 "234234234234278" `shouldBe` 434234234278
+
+      it "818181911112111" $ do 
+        dodecMax2 "818181911112111" `shouldBe` 888911112111
 
     describe "dodecMax1" $ do 
       it "987654321111111" $ do 
