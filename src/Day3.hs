@@ -52,7 +52,7 @@ buildBigNum1' n (c_n, c) cs =
    in (c:) <$> lower_digit_sets
 
 {--
- - buildBigNum1' 2 (2, '1') [(0,'3'),(1,'2'),(2,'1')]
+ - buildBigNum1' 2 (3, '8') [(0,'9'),(2,'8'),(3,'8'),(1,'1')]
  - cs_after_c = [(0,'3'),(1,'2')]
  - cs_with_enough = 
  - --}
@@ -81,7 +81,12 @@ traceLog :: Show a => a -> a
 traceLog x = trace ("\nTRACE'" ++ show x ++ "'\n") x 
 
 charsWithPos1 :: [Char] -> [(Int, Char)]
-charsWithPos1 = sortBy (comparing (Down . snd)) . zip [0..] . reverse
+charsWithPos1 = sortBy compareChars . zip [0..] . reverse
+  where 
+    compareChars :: (Int, Char) -> (Int, Char) -> Ordering
+    compareChars c1 c2 = 
+      comparing (Down . snd) c1 c2 <> comparing (Down . fst) c1 c2
+      
 
 findMaxNum0 :: [Char] -> Int
 findMaxNum0 digits = maximum $ numbers0 digits
