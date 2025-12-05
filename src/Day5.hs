@@ -11,7 +11,7 @@ import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
 import Data.Text.Read
 import Data.List (isPrefixOf, sortBy, intersperse, intercalate)
-import Data.List.Split (chunksOf)
+import Data.List.Split (chunksOf, splitEvery)
 import Data.Maybe (fromMaybe, fromJust)
 import Text.Read (readMaybe)
 import Control.Applicative (liftA2)
@@ -20,7 +20,7 @@ import Data.Ord (Down (..), comparing)
 import Data.Map qualified as M
 import Data.Set qualified as S
 
--- import Debug.Trace (trace)
+import Debug.Trace (trace)
 
 type Range = (Int, Int)
 
@@ -35,17 +35,20 @@ sumRanges0 :: [Range] -> Int
 sumRanges0 = sum . map (\(s, e) -> e - s + 1)
 
 mergeRanges0 :: [Range] -> [Range]
-mergeRanges0 = foldl mergeRange0 [] . sortBy compareRange
+mergeRanges0 = foldl' mergeRange0 [] . sortBy compareRange
 
 mergeRange0 :: [Range] -> Range -> [Range]
-mergeRange0 [] r' = trace ("\nadding end: " ++ show r') [r']
+mergeRange0 [] r' = trace ("\nadding end: " ++ commaRange r') [r']
 mergeRange0 all_rs@(r@(s, e):rs) r'@(s', e') 
-  | e' < s = trace ("\nprepending: " ++ show r' ++ " - " ++ show all_rs) $ r' : r : rs
-  | e' `isBetween` r = trace ("\nend is between: " ++ show r' ++ " - " ++ show all_rs) $ (s', e) : rs
+  | e' < s = traceStep "prepending" $ r' : r : rs
+  | e' `isBetween` r = traceStep "end is between" $ (s', e) : rs
   | s' `isBetween` r =  
-      let trace' = trace ("\nstart is between: " ++ show r' ++ " - " ++ show all_rs)
+      let trace' = traceStep "start is between"
        in trace' $ mergeRange0 rs (s, e')
-  | otherwise = trace ("\ncontinuing: " ++ show r' ++ " - " ++ show all_rs) $ r : mergeRange0 rs r'
+  | otherwise = traceStep "continuing" $ r : mergeRange0 rs r'
+  where 
+    traceStep :: String -> a -> a
+    traceStep prefix = trace ("\n" ++ prefix ++ ": " ++ commaRange r' ++ " - " ++ concatMap commaRange (take 3 all_rs))
 
 compareRange :: Range -> Range -> Ordering
 compareRange = comparing fst
@@ -68,9 +71,15 @@ readRange line =
     [s, e] -> (readInt s, readInt e)
     _ -> error "parse"
 
+commaRange :: Range -> String
+commaRange (s, e) = "(" ++ commaNum s ++ "-" ++ commaNum e ++ ")"
+
+commaNum :: Int -> String
+commaNum x = reverse (intercalate "," . chunksOf 3 . reverse . show $ x)
+
 readInt :: T.Text -> Int
 readInt = either error fst . decimal
 
-trace :: String -> a -> a
-trace _ x = x
+-- trace :: String -> a -> a
+-- trace _ x = x
 

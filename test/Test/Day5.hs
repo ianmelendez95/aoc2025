@@ -35,6 +35,13 @@ test =
         res `shouldNotBe` 325030422967918
         res `shouldNotBe` 312999017066962
 
+      it "full-trial" $ do 
+        res <- soln "test/Test/Day5/full.txt"
+        putStrLn $ "Solution: " ++ show res
+        res `shouldNotBe` 325400210124724
+        res `shouldNotBe` 325030422967918
+        res `shouldNotBe` 312999017066962
+
     describe "sumRanges0" $ do 
       it "short" $ do 
         sumRanges0 [(3, 5), (10, 20)] `shouldBe` 3 + 11
