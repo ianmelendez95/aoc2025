@@ -9,6 +9,7 @@ import Test.Hspec
     it,
     xit,
     shouldBe,
+    shouldNotBe,
     shouldSatisfy,
     xdescribe,
     expectationFailure,
@@ -25,11 +26,11 @@ test =
     describe "soln" $ do 
       it "short-input.txt" $ do 
         res <- soln "test/Test/Day5/short.txt"
-        res `shouldBe` 43
+        res `shouldBe` 3
 
-      xit "full-input.txt" $ do 
+      it "full-input.txt" $ do 
         res <- soln "test/Test/Day5/full.txt"
         putStrLn $ "Solution: " ++ show res
-        res `shouldBe` 8587
+        res `shouldNotBe` 172
 
 

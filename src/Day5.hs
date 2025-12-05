@@ -18,15 +18,22 @@ import Debug.Trace (trace)
 import Data.Map qualified as M
 import Data.Set qualified as S
 
+type Range = (Int, Int)
+
 soln :: FilePath -> IO Int
 soln file = do
   ls <- T.lines <$> TIO.readFile file
   let (ranges, ingrs) = readDb ls
-  print ranges
-  print ingrs
-  pure 0
+      fresh_ingrs = filter (not . isSpoiled0 ranges) ingrs
+  pure $ length fresh_ingrs
 
-readDb :: [T.Text] -> ([(Int, Int)], [Int])
+isSpoiled0 :: [Range] -> Int -> Bool
+isSpoiled0 rs i = any (i `isBetween`) rs
+
+isBetween :: Int -> Range -> Bool
+isBetween i (l, r) = i >= l && i <= r
+
+readDb :: [T.Text] -> ([Range], [Int])
 readDb ls = 
   let (ranges, rest) = span (/= "") ls
       ingrs = drop 1 rest
