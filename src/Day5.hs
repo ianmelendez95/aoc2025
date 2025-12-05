@@ -52,17 +52,21 @@ mergeRanges0 :: [Range] -> [Range]
 mergeRanges0 = foldl' mergeRange0 [] . sortBy compareRange
 
 mergeRange0 :: [Range] -> Range -> [Range]
-mergeRange0 [] r' = trace ("\nadding end: " ++ commaRange r') [r']
+mergeRange0 [] r' = {--trace ("\nadding end: " ++ commaRange r')--} [r']
 mergeRange0 all_rs@(r@(s, e):rs) r'@(s', e') 
   | e' < s = traceStep "prepending" $ r' : r : rs
-  | e' `isBetween` r = traceStep "end is between" $ (s', e) : rs
+  | e' `isBetween` r = traceStep "end is between" $ mergePair r r' : rs
   | s' `isBetween` r =  
       let trace' = traceStep "start is between"
-       in trace' $ mergeRange0 rs (s, e')
+       in trace' $ mergeRange0 rs (mergePair r r')
   | otherwise = traceStep "continuing" $ r : mergeRange0 rs r'
   where 
     traceStep :: String -> a -> a
-    traceStep prefix = trace ("\n" ++ prefix ++ ": " ++ commaRange r' ++ " - " ++ concatMap commaRange (take 3 all_rs))
+    traceStep prefix = id
+      -- trace ("\n" ++ prefix ++ ": " ++ commaRange r' ++ " - " ++ concatMap commaRange (take 3 all_rs))
+
+    mergePair :: Range -> Range -> Range
+    mergePair (ms, me) (ms', me') = (min ms ms', max me me')
 
 compareRange :: Range -> Range -> Ordering
 compareRange = comparing fst

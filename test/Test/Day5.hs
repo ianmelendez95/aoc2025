@@ -19,6 +19,11 @@ import Day5
 import Data.Text qualified as T
 import Data.Text qualified as TIO
 import Data.Maybe (fromJust)
+import Test.QuickCheck
+
+newtype Range = Range {
+  unRange :: (Int, Int)
+} deriving Show
 
 test :: SpecWith ()
 test = 
@@ -47,6 +52,10 @@ test =
         let ranges' = take 5 ranges
         totalNums0 ranges' `shouldBe` totalNums1 ranges'
 
+    describe "totalNums0" $ do 
+      it "totalNums" $ do 
+        totalNums0 [(4, 9), (8, 9)] `shouldBe` 6
+
     describe "sumRanges0" $ do 
       it "short" $ do 
         sumRanges0 [(3, 5), (10, 20)] `shouldBe` 3 + 11
@@ -60,10 +69,50 @@ test =
         print merged
         merged `shouldBe` [(3, 5), (10, 20)]
 
+      it "4-9,8-9" $ do 
+        mergeRanges0 [(4, 9), (8, 9)] `shouldBe` [(4, 9)]
+
+
     describe "readDbFile" $ do 
       it "reads" $ do 
         (ranges, ingrs) <- readDbFile "test/Test/Day5/full.txt"
         length ranges `shouldBe` 181
         length ingrs `shouldBe` (1182 - 182)
+
+    describe "QuickCheck" $ do 
+      it "matches" $ do 
+        result <- quickCheckResult prop_totalNums
+        result `shouldSatisfy` isSuccess
+
+prop_totalNums :: [Range] -> Bool
+prop_totalNums rs = totalNums0 rs' == totalNums1 rs'
+  where 
+    rs' = map unRange rs
+
+instance Arbitrary Range where 
+  arbitrary = do 
+    start <- chooseInt (1, 10)
+    end <- chooseInt (start, 10)
+    pure $ Range (start, end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

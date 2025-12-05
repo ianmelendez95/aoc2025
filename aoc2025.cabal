@@ -151,5 +151,6 @@ test-suite aoc2025-test
         aoc2025,
         hspec,
         hspec-contrib,
-        text
+        text,
+        QuickCheck
 
