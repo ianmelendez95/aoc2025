@@ -33,4 +33,10 @@ test =
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 172
 
+    describe "readDbFile" $ do 
+      it "reads" $ do 
+        (ranges, ingrs) <- readDbFile "test/Test/Day5/full.txt"
+        length ranges `shouldBe` 181
+        length ingrs `shouldBe` (1182 - 182)
+
 

@@ -1,5 +1,7 @@
 module Day5 
   ( soln, 
+    readDbFile,
+    readRange
   ) 
   where
 
@@ -27,23 +29,28 @@ soln file = do
       fresh_ingrs = filter (not . isSpoiled0 ranges) ingrs
   pure $ length fresh_ingrs
 
+
+
 isSpoiled0 :: [Range] -> Int -> Bool
 isSpoiled0 rs i = any (i `isBetween`) rs
 
 isBetween :: Int -> Range -> Bool
 isBetween i (l, r) = i >= l && i <= r
 
+readDbFile :: FilePath -> IO ([Range], [Int])
+readDbFile file = readDb . T.lines <$> TIO.readFile file
+
 readDb :: [T.Text] -> ([Range], [Int])
 readDb ls = 
   let (ranges, rest) = span (/= "") ls
       ingrs = drop 1 rest
    in (map readRange ranges, map readInt ingrs)
-  where 
-    readRange :: T.Text -> (Int, Int)
-    readRange line = 
-      case T.split (=='-') line of 
-        [s, e] -> (readInt s, readInt e)
-        _ -> error "parse"
+
+readRange :: T.Text -> (Int, Int)
+readRange line = 
+  case T.split (=='-') line of 
+    [s, e] -> (readInt s, readInt e)
+    _ -> error "parse"
 
 readInt :: T.Text -> Int
 readInt = either error fst . decimal
