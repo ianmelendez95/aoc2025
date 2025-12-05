@@ -35,20 +35,20 @@ sumRanges0 :: [Range] -> Int
 sumRanges0 = sum . map (\(s, e) -> e - s + 1)
 
 mergeRanges0 :: [Range] -> [Range]
-mergeRanges0 rs = 
-  let rs' = foldl mergeRange0 [] rs
-   in if length rs == length rs' then rs else mergeRanges0 rs'
+mergeRanges0 = foldl mergeRange0 [] . sortBy compareRange
 
 mergeRange0 :: [Range] -> Range -> [Range]
 mergeRange0 [] r' = trace ("\nadding end: " ++ show r') [r']
 mergeRange0 all_rs@(r@(s, e):rs) r'@(s', e') 
   | e' < s = trace ("\nprepending: " ++ show r' ++ " - " ++ show all_rs) $ r' : r : rs
   | e' `isBetween` r = trace ("\nend is between: " ++ show r' ++ " - " ++ show all_rs) $ (s', e) : rs
-  | s' `isBetween` r = trace ("\nstart is between: " ++ show r' ++ " - " ++ show all_rs) $ (s, e') : rs
+  | s' `isBetween` r =  
+      let trace' = trace ("\nstart is between: " ++ show r' ++ " - " ++ show all_rs)
+       in trace' $ mergeRange0 rs (s, e')
   | otherwise = trace ("\ncontinuing: " ++ show r' ++ " - " ++ show all_rs) $ r : mergeRange0 rs r'
 
-isSpoiled0 :: [Range] -> Int -> Bool
-isSpoiled0 rs i = not $ any (i `isBetween`) rs
+compareRange :: Range -> Range -> Ordering
+compareRange = comparing fst
 
 isBetween :: Int -> Range -> Bool
 isBetween i (l, r) = i >= l && i <= r
