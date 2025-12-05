@@ -23,7 +23,7 @@ test :: SpecWith ()
 test = 
   describe "Day5" $ do 
     describe "soln" $ do 
-      xit "short-input.txt" $ do 
+      it "short-input.txt" $ do 
         res <- soln "test/Test/Day5/short.txt"
         res `shouldBe` 43
 
