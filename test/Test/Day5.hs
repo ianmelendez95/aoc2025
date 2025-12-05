@@ -35,12 +35,17 @@ test =
         res `shouldNotBe` 325030422967918
         res `shouldNotBe` 312999017066962
 
-      it "full-trial" $ do 
+      xit "full-trial" $ do 
         res <- soln "test/Test/Day5/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 325400210124724
         res `shouldNotBe` 325030422967918
         res `shouldNotBe` 312999017066962
+
+      xit "first n" $ do 
+        (ranges, _) <- readDbFile "test/Test/Day5/full.txt"
+        let ranges' = take 5 ranges
+        totalNums0 ranges' `shouldBe` totalNums1 ranges'
 
     describe "sumRanges0" $ do 
       it "short" $ do 

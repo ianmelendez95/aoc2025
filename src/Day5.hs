@@ -3,7 +3,9 @@ module Day5
     readDbFile,
     readRange,
     mergeRanges0,
-    sumRanges0
+    totalNums0,
+    totalNums1,
+    sumRanges0,
   ) 
   where
 
@@ -24,12 +26,24 @@ import Debug.Trace (trace)
 
 type Range = (Int, Int)
 
+type NumSet = S.Set Int
+
 soln :: FilePath -> IO Int
 soln file = do
   ls <- T.lines <$> TIO.readFile file
   let (ranges, _) = readDb ls
-      merged_ranges = mergeRanges0 ranges
-  pure $ sumRanges0 merged_ranges
+  pure $ totalNums0 ranges
+
+totalNums0 :: [Range] -> Int
+totalNums0 ranges = 
+  let merged_ranges = mergeRanges0 ranges
+   in sumRanges0 merged_ranges
+
+totalNums1 :: [Range] -> Int
+totalNums1 = S.size . S.unions . map rangeNums1
+
+rangeNums1 :: Range -> NumSet
+rangeNums1 (s, e) = S.fromList [s..e]
 
 sumRanges0 :: [Range] -> Int
 sumRanges0 = sum . map (\(s, e) -> e - s + 1)
