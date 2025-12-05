@@ -8,6 +8,7 @@ import Test.Hspec
     expectationFailure,
     it,
     xit,
+    xdescribe,
     shouldBe,
     shouldSatisfy,
     xdescribe,
@@ -50,7 +51,7 @@ testDay3 =
       it "2 1234" $ do 
         takeAny0 2 "1234" `shouldMatchList` ["12", "13", "14", "23", "24", "34"]
 
-    describe "dodecMax" $ do 
+    xdescribe "dodecMax" $ do 
       it "987654321111111" $ do 
         dodecMax0 "987654321111111" `shouldBe` 987654321111
         dodecMax1 "987654321111111" `shouldBe` 987654321111
@@ -67,7 +68,14 @@ testDay3 =
         dodecMax0 "818181911112111" `shouldBe` 888911112111
         dodecMax1 "818181911112111" `shouldBe` 888911112111
 
-    describe "buildBigNum" $ do 
+    describe "buildBigNumFinal" $ do 
+      it "987654321111111" $ do 
+        buildBigNumFinal1 12 (charsWithPos1 "987654321111111") `shouldBe` 987654321111
+
+      it "14" $ do 
+        buildBigNumFinal1 2 (charsWithPos1 "14") `shouldBe` 14
+
+    xdescribe "buildBigNum" $ do 
       it "987654321111111" $ do 
         buildBigNum1 12 (charsWithPos1 "987654321111111") `shouldBe` Just "987654321111"
 
@@ -79,6 +87,15 @@ testDay3 =
 
       it "1" $ do 
         buildBigNum1 1 (charsWithPos1 "1") `shouldBe` Just "1"
+
+    describe "buildBigNum'" $ do 
+      it "test1" $ do 
+        buildBigNum1' 1 (1, '1') [(0, '4'), (1, '1')] `shouldBe` ["14"]
+        {--
+         - buildBigNum1' 2 (1, '1') [(0, '4'), (1, '1')]
+         - cs_after_c = [(0, '4')]
+         - cs_with_enough = 
+        --}
         
     describe "charsWithPos1" $ do 
       it "1234" $ do

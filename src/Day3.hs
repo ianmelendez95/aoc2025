@@ -7,8 +7,10 @@ module Day3
     dodecMax0,
     dodecMax1,
     buildBigNum1,
+    buildBigNum1',
     charsWithPos1,
-    withEach0
+    withEach0,
+    buildBigNumFinal1
   ) 
   where
 
@@ -32,14 +34,31 @@ soln file = do
 dodecMax1 :: [Char] -> Int
 dodecMax1 = read . fromJust . buildBigNum1 12 . charsWithPos1
 
-buildBigNum1 :: Int -> [(Int, Char)] -> Maybe [Char]
+buildBigNumFinal1 :: Int -> [(Int, Char)] -> Int
+buildBigNumFinal1 n cs = 
+  let big_nums = concatMap (\c -> buildBigNum1' (n - 1) c cs) cs
+   in case big_nums of 
+        [] -> error "No soln"
+        (big_num:_) -> read big_num
+
+buildBigNum1' :: Int -> (Int, Char) -> [(Int, Char)] -> [String]
+buildBigNum1' 0 (_, c) _ = [[c]]
+buildBigNum1' _ _ [] = []
+buildBigNum1' n (c_n, c) cs = 
+  let cs_after_c = filter (\(c_n', _) -> c_n > c_n') cs
+      cs_with_enough = filter (\(c_n', _) -> c_n' >= (n - 1)) cs_after_c
+      lower_digit_sets :: [String]
+      lower_digit_sets = concatMap (\c' -> buildBigNum1' (n - 1) c' cs_with_enough) cs_with_enough
+   in (c:) <$> lower_digit_sets
+
+buildBigNum1 :: Int -> [(Int, Char)] -> Maybe String
 buildBigNum1 0 _ = Just []
 buildBigNum1 _ [] = Nothing
 buildBigNum1 n ((c_n, c):cs) = 
   let cs_after_c = filter (\(c_n', _) -> c_n' < c_n) cs
       cs_with_enough = filter (\(c_n', _) -> c_n' >= (n - 1)) cs_after_c
    in case buildBigNum1 (n - 1) cs_with_enough of 
-        Nothing -> buildBigNum1 n cs
+        Nothing -> Nothing
         Just big_boy -> Just (c : big_boy)
 
 withEach0 :: forall a b. (a -> [a] -> Maybe b) -> [a] -> [b]
