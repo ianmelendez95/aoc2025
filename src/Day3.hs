@@ -32,7 +32,7 @@ soln file = do
   pure $ sum (map (dodecMax0 . T.unpack) banks)
 
 dodecMax1 :: [Char] -> Int
-dodecMax1 = read . fromJust . buildBigNum1 12 . charsWithPos1
+dodecMax1 = buildBigNumFinal1 12 . charsWithPos1
 
 buildBigNumFinal1 :: Int -> [(Int, Char)] -> Int
 buildBigNumFinal1 n cs = 
@@ -48,8 +48,15 @@ buildBigNum1' n (c_n, c) cs =
   let cs_after_c = filter (\(c_n', _) -> c_n > c_n') cs
       cs_with_enough = filter (\(c_n', _) -> c_n' >= (n - 1)) cs_after_c
       lower_digit_sets :: [String]
-      lower_digit_sets = concatMap (\c' -> buildBigNum1' (n - 1) c' cs_with_enough) cs_with_enough
+      lower_digit_sets = concatMap (\c' -> buildBigNum1' (n - 1) c' cs_after_c) cs_with_enough
    in (c:) <$> lower_digit_sets
+
+{--
+ - buildBigNum1' 2 (2, '1') [(0,'3'),(1,'2'),(2,'1')]
+ - cs_after_c = [(0,'3'),(1,'2')]
+ - cs_with_enough = 
+ - --}
+
 
 buildBigNum1 :: Int -> [(Int, Char)] -> Maybe String
 buildBigNum1 0 _ = Just []

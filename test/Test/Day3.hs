@@ -51,7 +51,7 @@ testDay3 =
       it "2 1234" $ do 
         takeAny0 2 "1234" `shouldMatchList` ["12", "13", "14", "23", "24", "34"]
 
-    xdescribe "dodecMax" $ do 
+    describe "dodecMax" $ do 
       it "987654321111111" $ do 
         dodecMax0 "987654321111111" `shouldBe` 987654321111
         dodecMax1 "987654321111111" `shouldBe` 987654321111
@@ -71,6 +71,18 @@ testDay3 =
     describe "buildBigNumFinal" $ do 
       it "987654321111111" $ do 
         buildBigNumFinal1 12 (charsWithPos1 "987654321111111") `shouldBe` 987654321111
+
+      it "811111111111119" $ do 
+        dodecMax0 "811111111111119" `shouldBe` 811111111119
+        dodecMax1 "811111111111119" `shouldBe` 811111111119
+
+      it "234234234234278" $ do 
+        dodecMax0 "234234234234278" `shouldBe` 434234234278
+        dodecMax1 "234234234234278" `shouldBe` 434234234278
+
+      it "818181911112111" $ do 
+        dodecMax0 "818181911112111" `shouldBe` 888911112111
+        dodecMax1 "818181911112111" `shouldBe` 888911112111
 
       it "14" $ do 
         buildBigNumFinal1 2 (charsWithPos1 "14") `shouldBe` 14
@@ -96,6 +108,10 @@ testDay3 =
          - cs_after_c = [(0, '4')]
          - cs_with_enough = 
         --}
+      
+      it "123" $ do 
+        -- [(0,'3'),(1,'2'),(2,'1')]
+        buildBigNum1' 2 (2, '1') (charsWithPos1 "123") `shouldBe` ["123"]
         
     describe "charsWithPos1" $ do 
       it "1234" $ do
