@@ -33,6 +33,15 @@ test =
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 172
 
+    describe "mergeRanges0" $ do 
+      it "short" $ do 
+        (ranges, _) <- readDbFile "test/Test/Day5/short.txt"
+        let ranges' = [(3,5),(10,14),(16,20),(12,18)]
+            merged = mergeRanges0 ranges'
+        print ranges
+        print merged
+        merged `shouldBe` [(3, 5), (10, 20)]
+
     describe "readDbFile" $ do 
       it "reads" $ do 
         (ranges, ingrs) <- readDbFile "test/Test/Day5/full.txt"
