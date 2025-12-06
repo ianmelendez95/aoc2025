@@ -1,6 +1,6 @@
 module Main (main) where 
 
-import Day1
+import Day5
 
 main :: IO ()
-main = soln "src/Day1/full.txt" >>= print
+main = soln "test/Test/Day5/full.txt" >>= print
