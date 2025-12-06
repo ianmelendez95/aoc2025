@@ -38,10 +38,10 @@ soln :: FilePath -> IO Int
 soln file = do
   ls <- T.lines <$> TIO.readFile file
   let math_rows = parseInput1 ls
-      math_results = map doMathRow0 math_rows
+      -- math_results = map doMathRow0 math_rows
       res = sum $ map doMathRow0 math_rows
-  mapM_ print math_rows
-  mapM_ print math_results
+  -- mapM_ print math_rows
+  -- mapM_ print math_results
   -- print ls
   pure res
 
@@ -71,18 +71,6 @@ parseInput1' op_row num_rows =
           
           nums = parseNums0 num_txts
        in (nums, op) : parseInput1' op_row_rest num_row_rests
-
--- parseInput0 :: [T.Text] -> [MathRow]
--- parseInput0 ls =
---   let matrix = map T.words ls
---       matrix' = transpose matrix
---    in map parseMathRow0 matrix'
-
--- parseMathRow0 :: [T.Text] -> MathRow
--- parseMathRow0 ws = 
---   case unsnoc ws of 
---     Nothing -> error "parse"
---     Just (nums, op) -> (parseNums0 nums, parseOp $ T.unpack op)
 
 parseNums0 :: [T.Text] -> [Int]
 parseNums0 = map readInt . filter (/= "") . map T.strip . T.transpose

@@ -33,7 +33,7 @@ test =
         res <- soln "test/Test/Day6/short.txt"
         res `shouldBe` 3263827
 
-      xit "full-input.txt" $ do
+      it "full-input.txt" $ do
         res <- soln "test/Test/Day6/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 325400210124724
