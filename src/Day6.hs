@@ -35,9 +35,14 @@ soln :: FilePath -> IO Int
 soln file = do
   ls <- T.lines <$> TIO.readFile file
   let math_rows = parseInput0 ls
+      res = sum $ map doMathRow0 math_rows
   mapM_ print math_rows
   print ls
-  pure 0
+  pure res
+
+doMathRow0 :: MathRow -> Int
+doMathRow0 (ns, Add) = sum ns
+doMathRow0 (ns, Mult) = product ns
 
 parseInput0 :: [T.Text] -> [MathRow]
 parseInput0 ls =
