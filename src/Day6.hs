@@ -51,10 +51,10 @@ doMathRow0 (ns, Mult) = product ns
 
 parseInput1 :: [T.Text] -> [MathRow]
 parseInput1 rows = 
-  case reverse rows of 
-    [] -> error $ "reverse: " ++ show rows
-    (op_row : num_rows) -> 
-      parseInput1' op_row (reverse num_rows)
+  case unsnoc rows of 
+    Nothing -> error $ "unsnoc: " ++ show rows
+    Just (num_rows, op_row) -> 
+      parseInput1' op_row num_rows
 
 parseInput1' :: T.Text -> [T.Text] -> [MathRow]
 parseInput1' op_row num_rows = 

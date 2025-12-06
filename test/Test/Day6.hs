@@ -36,7 +36,7 @@ test =
       it "full-input.txt" $ do
         res <- soln "test/Test/Day6/full.txt"
         putStrLn $ "Solution: " ++ show res
-        res `shouldNotBe` 325400210124724
+        res `shouldNotBe` 9194682052782
 
     describe "parseInput1" $ do
       it "parses one col" $ do
