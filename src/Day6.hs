@@ -1,5 +1,7 @@
 module Day6
   ( soln,
+    parseMathRow0,
+    parseNums0
   )
 where
 
@@ -20,7 +22,7 @@ import Data.Set qualified as S
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
 import Data.Text.Read
-import Debug.Trace (trace)
+import Debug.Trace (trace, traceShowId)
 import Text.Read (readMaybe)
 
 type Range = (Int, Int)
@@ -35,9 +37,11 @@ soln :: FilePath -> IO Int
 soln file = do
   ls <- T.lines <$> TIO.readFile file
   let math_rows = parseInput0 ls
+      math_results = map doMathRow0 math_rows
       res = sum $ map doMathRow0 math_rows
   mapM_ print math_rows
-  print ls
+  mapM_ print math_results
+  -- print ls
   pure res
 
 doMathRow0 :: MathRow -> Int
@@ -54,7 +58,12 @@ parseMathRow0 :: [T.Text] -> MathRow
 parseMathRow0 ws = 
   case unsnoc ws of 
     Nothing -> error "parse"
-    Just (nums, op) -> (map readInt nums, parseOp $ T.unpack op)
+    Just (nums, op) -> (parseNums0 nums, parseOp $ T.unpack op)
+
+parseNums0 :: [T.Text] -> [Int]
+parseNums0 nums = -- map (readInt . T.justifyRight) (T.transpose (map (T.justifyRight )))
+  let padded = map (T.justifyRight 10 ' ') nums
+   in map readInt . filter (/= "") . map T.strip . T.transpose $ padded
 
 parseOp :: String -> Op
 parseOp "+" = Add
