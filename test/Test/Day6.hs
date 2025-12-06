@@ -38,19 +38,25 @@ test =
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 325400210124724
 
+    describe "parseInput1" $ do 
+      it "parses one col" $ do 
+        let rows :: [T.Text]
+            rows = ["123", " 45", "  6", "*   "]
+        parseInput1 rows `shouldBe` [([1, 24, 356], Mult)]
+        
 
     describe "parseMathRow0" $ do 
       it "col1" $ do 
-        parseNums0 ["123", "45", "6"] `shouldBe` [1, 24, 356]
+        parseNums0 ["123", " 45", "  6"] `shouldMatchList` [1, 24, 356]
         
       it "col2" $ do 
-        parseNums0 ["328", "64", "98"] `shouldBe` [3, 269, 848]
+        parseNums0 ["328", "64 ", "98 "] `shouldMatchList` [369, 248, 8]
         
       it "col3" $ do 
-        parseNums0 ["51", "387", "215"] `shouldBe` [32, 581, 175]
+        parseNums0 [" 51", "387", "215"] `shouldMatchList` [32, 581, 175]
         
       it "col4" $ do 
-        parseNums0 ["64", "23", "314"] `shouldBe` [3, 621, 434]
+        parseNums0 ["64 ", "23 ", "314"] `shouldMatchList` [623, 431, 4]
 
 
     

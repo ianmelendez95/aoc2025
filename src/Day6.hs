@@ -1,7 +1,8 @@
 module Day6
   ( soln,
-    parseMathRow0,
-    parseNums0
+    parseInput1,
+    parseNums0,
+    Op (..)
   )
 where
 
@@ -31,12 +32,12 @@ type NumSet = S.Set Int
 
 type MathRow = ([Int], Op)
 
-data Op = Add | Mult deriving Show
+data Op = Add | Mult deriving (Show, Eq)
 
 soln :: FilePath -> IO Int
 soln file = do
   ls <- T.lines <$> TIO.readFile file
-  let math_rows = parseInput0 ls
+  let math_rows = parseInput1 ls
       math_results = map doMathRow0 math_rows
       res = sum $ map doMathRow0 math_rows
   mapM_ print math_rows
@@ -48,27 +49,48 @@ doMathRow0 :: MathRow -> Int
 doMathRow0 (ns, Add) = sum ns
 doMathRow0 (ns, Mult) = product ns
 
-parseInput0 :: [T.Text] -> [MathRow]
-parseInput0 ls =
-  let matrix = map T.words ls
-      matrix' = transpose matrix
-   in map parseMathRow0 matrix'
+parseInput1 :: [T.Text] -> [MathRow]
+parseInput1 rows = 
+  case reverse rows of 
+    [] -> error $ "reverse: " ++ show rows
+    (op_row : num_rows) -> 
+      parseInput1' op_row (reverse num_rows)
 
-parseMathRow0 :: [T.Text] -> MathRow
-parseMathRow0 ws = 
-  case unsnoc ws of 
-    Nothing -> error "parse"
-    Just (nums, op) -> (parseNums0 nums, parseOp $ T.unpack op)
+parseInput1' :: T.Text -> [T.Text] -> [MathRow]
+parseInput1' op_row num_rows = 
+  case T.uncons op_row of 
+    Nothing -> []
+    Just (op_char, rest_with_blanks) -> 
+      let (blanks, op_row_rest) = T.break (/=' ') rest_with_blanks
+          op = parseOp op_char
+          parse_len = T.length blanks
+
+          split_num_txts = map (T.splitAt parse_len) num_rows
+          num_row_rests = map snd split_num_txts
+          num_txts = map fst split_num_txts
+          
+          nums = parseNums0 num_txts
+       in (nums, op) : parseInput1' op_row_rest num_row_rests
+
+-- parseInput0 :: [T.Text] -> [MathRow]
+-- parseInput0 ls =
+--   let matrix = map T.words ls
+--       matrix' = transpose matrix
+--    in map parseMathRow0 matrix'
+
+-- parseMathRow0 :: [T.Text] -> MathRow
+-- parseMathRow0 ws = 
+--   case unsnoc ws of 
+--     Nothing -> error "parse"
+--     Just (nums, op) -> (parseNums0 nums, parseOp $ T.unpack op)
 
 parseNums0 :: [T.Text] -> [Int]
-parseNums0 nums = -- map (readInt . T.justifyRight) (T.transpose (map (T.justifyRight )))
-  let padded = map (T.justifyRight 10 ' ') nums
-   in map readInt . filter (/= "") . map T.strip . T.transpose $ padded
+parseNums0 = map readInt . filter (/= "") . map T.strip . T.transpose
 
-parseOp :: String -> Op
-parseOp "+" = Add
-parseOp "*" = Mult
-parseOp x = error $ "op parse: " ++ x
+parseOp :: Char -> Op
+parseOp '+' = Add
+parseOp '*' = Mult
+parseOp x = error $ "op parse: " ++ [x]
 
 -- trace :: String -> a -> a
 -- trace _ x = x
