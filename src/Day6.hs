@@ -23,7 +23,7 @@ import Data.Set qualified as S
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
 import Data.Text.Read
-import Debug.Trace (trace, traceShowId)
+import Debug.Trace (trace, traceShowId, traceWith)
 import Text.Read (readMaybe)
 
 type Range = (Int, Int)
@@ -63,7 +63,7 @@ parseInput1' op_row num_rows =
     Just (op_char, rest_with_blanks) -> 
       let (blanks, op_row_rest) = T.break (/=' ') rest_with_blanks
           op = parseOp op_char
-          parse_len = T.length blanks
+          parse_len = T.length blanks + 1 -- include the op char itself
 
           split_num_txts = map (T.splitAt parse_len) num_rows
           num_row_rests = map snd split_num_txts
