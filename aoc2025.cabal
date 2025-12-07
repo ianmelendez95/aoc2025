@@ -160,5 +160,6 @@ test-suite aoc2025-test
         hspec,
         hspec-contrib,
         text,
-        QuickCheck
+        QuickCheck,
+        containers
 

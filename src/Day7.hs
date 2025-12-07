@@ -1,5 +1,6 @@
 module Day7
   ( soln,
+    collide
   )
 where
 
@@ -12,7 +13,8 @@ import Data.List
     transpose,
     uncons,
     unsnoc,
-    find
+    find,
+    foldl'
   )
 import Data.List.Split (chunksOf, splitEvery)
 import Data.Map qualified as M
@@ -30,6 +32,8 @@ import Data.Text.Read
 import Debug.Trace (trace, traceShowId, traceWith)
 import Text.Read (readMaybe)
 
+type Beams = S.Set Int
+
 soln :: FilePath -> IO Int
 soln file = do
   (start_line : splitter_lines) <- T.lines <$> TIO.readFile file
@@ -39,6 +43,16 @@ soln file = do
   putStr "Splitters"
   mapM_ print splitters
   pure 0
+
+collide :: Beams -> Beams -> Beams
+collide beams splitters = 
+  let misses = S.difference beams splitters -- these stay
+
+      hits = S.intersection beams splitters
+   in S.foldl' collectSplits misses hits
+  where 
+    collectSplits :: Beams -> Int -> Beams
+    collectSplits c_beams hit = S.union c_beams (S.fromList [hit - 1, hit + 1])
 
 readStart :: T.Text -> Int
 readStart =
