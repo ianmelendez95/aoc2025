@@ -31,26 +31,26 @@ test :: SpecWith ()
 test =
   describe "Day7" $ do
     describe "soln" $ do
-      xit "short-input.txt" $ do
+      it "short-input.txt" $ do
         res <- soln "test/Test/Day7/short.txt"
         res `shouldBe` 40
 
-      xit "full-input.txt" $ do
+      it "full-input.txt" $ do
         res <- soln "test/Test/Day7/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
 
     describe "splitUnivs" $ do 
       it "single" $ do 
-        let res = splitUnivs (S.singleton 7) (M.singleton 7 1)
+        let res = splitUnivs (M.singleton 7 1) (S.singleton 7)
         res `shouldBe` M.fromList [(6, 1), (8, 1)]
 
       it "single" $ do 
-        let res = splitUnivs (S.singleton 7) (M.singleton 7 1)
+        let res = splitUnivs (M.singleton 7 1) (S.singleton 7)
         res `shouldBe` M.fromList [(6, 1), (8, 1)]
 
       it "double" $ do 
-        let res = splitUnivs (S.fromList [6, 8]) (M.fromList [(6, 1), (8, 1)])
+        let res = splitUnivs (M.fromList [(6, 1), (8, 1)]) (S.fromList [6, 8])
         res `shouldBe` M.fromList [(5, 1), (7, 2), (9, 1)]
 
     describe "splitBeam" $ do 

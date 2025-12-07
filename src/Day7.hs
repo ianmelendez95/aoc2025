@@ -52,15 +52,19 @@ soln file = do
   let start = readStart start_line
       origin_univ = M.singleton start 1
       splitters = map readSplitters splitter_lines
-      (final_beams, _) = foldl' collide (S.singleton start, 0) splitters
+      final_beams = traverseUnivs origin_univ splitters
+      final_count = M.foldr (+) 0 final_beams
   -- putStrLn $ "Start: " ++ show start
   -- putStr "Splitters"
   -- mapM_ print splitters
-  pure $ S.size final_beams
+  pure final_count
 
-splitUnivs :: Splitters  -> M.Map Beam Count -> M.Map Beam Count
-splitUnivs splitters = 
-  M.fromAscListWith (+) . sortBy (comparing fst) . concatMap (splitBeam splitters) . M.toList
+traverseUnivs :: M.Map Beam Count -> [Splitters] -> M.Map Beam Count
+traverseUnivs = foldl' splitUnivs
+
+splitUnivs :: M.Map Beam Count -> Splitters -> M.Map Beam Count
+splitUnivs univs splitters = 
+  M.fromAscListWith (+) . sortBy (comparing fst) . concatMap (splitBeam splitters) . M.toList $ univs
 
 splitBeam :: Splitters -> (Beam, Count) -> [(Beam, Count)]
 splitBeam splitters b@(beam, count) = 
@@ -68,7 +72,6 @@ splitBeam splitters b@(beam, count) =
    in if not is_hit
         then [b]
         else [(beam - 1, count), (beam + 1, count)]
-
 
 collide :: (Beams, Int) -> Beams -> (Beams, Int)
 collide (beams, colls) splitters = 
