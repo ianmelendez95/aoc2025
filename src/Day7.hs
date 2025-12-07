@@ -1,6 +1,8 @@
 module Day7
   ( soln,
-    collide
+    collide,
+    splitBeam,
+    splitUnivs,
   )
 where
 
@@ -34,16 +36,39 @@ import Text.Read (readMaybe)
 
 type Beams = S.Set Int
 
+type Beam = Int
+
+type Splitter = Int
+
+type Count = Int
+
+type Splitters = S.Set Int
+
+type Univs = M.Map Beam Count
+
 soln :: FilePath -> IO Int
 soln file = do
   (start_line : splitter_lines) <- T.lines <$> TIO.readFile file
   let start = readStart start_line
+      origin_univ = M.singleton start 1
       splitters = map readSplitters splitter_lines
       (final_beams, _) = foldl' collide (S.singleton start, 0) splitters
   -- putStrLn $ "Start: " ++ show start
   -- putStr "Splitters"
   -- mapM_ print splitters
   pure $ S.size final_beams
+
+splitUnivs :: Splitters  -> M.Map Beam Count -> M.Map Beam Count
+splitUnivs splitters = 
+  M.fromAscListWith (+) . sortBy (comparing fst) . concatMap (splitBeam splitters) . M.toList
+
+splitBeam :: Splitters -> (Beam, Count) -> [(Beam, Count)]
+splitBeam splitters b@(beam, count) = 
+  let is_hit = S.member beam splitters
+   in if not is_hit
+        then [b]
+        else [(beam - 1, count), (beam + 1, count)]
+
 
 collide :: (Beams, Int) -> Beams -> (Beams, Int)
 collide (beams, colls) splitters = 

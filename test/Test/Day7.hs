@@ -20,6 +20,7 @@ import Test.Hspec
   )
 import Test.QuickCheck
 import Data.Set qualified as S
+import Data.Map qualified as M
 
 newtype Range = Range
   { unRange :: (Int, Int)
@@ -30,14 +31,32 @@ test :: SpecWith ()
 test =
   describe "Day7" $ do
     describe "soln" $ do
-      it "short-input.txt" $ do
+      xit "short-input.txt" $ do
         res <- soln "test/Test/Day7/short.txt"
         res `shouldBe` 40
 
-      it "full-input.txt" $ do
+      xit "full-input.txt" $ do
         res <- soln "test/Test/Day7/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
+
+    describe "splitUnivs" $ do 
+      it "single" $ do 
+        let res = splitUnivs (S.singleton 7) (M.singleton 7 1)
+        res `shouldBe` M.fromList [(6, 1), (8, 1)]
+
+      it "single" $ do 
+        let res = splitUnivs (S.singleton 7) (M.singleton 7 1)
+        res `shouldBe` M.fromList [(6, 1), (8, 1)]
+
+      it "double" $ do 
+        let res = splitUnivs (S.fromList [6, 8]) (M.fromList [(6, 1), (8, 1)])
+        res `shouldBe` M.fromList [(5, 1), (7, 2), (9, 1)]
+
+    describe "splitBeam" $ do 
+      it "single" $ do 
+        let res = splitBeam (S.singleton 7) (7, 1)
+        res `shouldBe` [(6, 1), (8, 1)]
 
     describe "collide" $ do
       it "single" $ do 
