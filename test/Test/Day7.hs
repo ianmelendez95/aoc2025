@@ -32,7 +32,7 @@ test =
     describe "soln" $ do
       it "short-input.txt" $ do
         res <- soln "test/Test/Day7/short.txt"
-        res `shouldBe` 3263827
+        res `shouldBe` 21
 
       it "full-input.txt" $ do
         res <- soln "test/Test/Day7/full.txt"
@@ -41,16 +41,16 @@ test =
 
     describe "collide" $ do
       it "single" $ do 
-        let res = collide (S.singleton 7) (S.singleton 7)
-        res `shouldBe` S.fromList [6, 8]
+        let res = collide (S.singleton 7, 0) (S.singleton 7)
+        res `shouldBe` (S.fromList [6, 8], 1)
 
       it "double" $ do 
-        let res = collide (S.fromList [6, 8]) (S.fromList [6, 8])
-        res `shouldBe` S.fromList [5, 7, 9]
+        let res = collide (S.fromList [6, 8], 0) (S.fromList [6, 8])
+        res `shouldBe` (S.fromList [5, 7, 9], 2)
 
       it "with miss" $ do 
-        let res = collide (S.fromList [4, 6, 8, 10]) (S.fromList [4, 6, 10])
-        res `shouldBe` S.fromList [3, 5, 7, 8, 9, 11]
+        let res = collide (S.fromList [4, 6, 8, 10], 0) (S.fromList [4, 6, 10])
+        res `shouldBe` (S.fromList [3, 5, 7, 8, 9, 11], 3)
         
     
 
