@@ -87,6 +87,7 @@ library
       Day4
       Day5
       Day6
+      Day7
 
     default-extensions:
       OverloadedStrings
@@ -138,6 +139,7 @@ test-suite aoc2025-test
       Test.Day4
       Test.Day5
       Test.Day6
+      Test.Day7
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
