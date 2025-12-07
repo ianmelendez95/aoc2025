@@ -10,11 +10,18 @@ import Data.List
     isPrefixOf,
     sortBy,
     transpose,
-    unsnoc
+    uncons,
+    unsnoc,
+    find
   )
 import Data.List.Split (chunksOf, splitEvery)
 import Data.Map qualified as M
-import Data.Maybe (fromJust, fromMaybe)
+import Data.Maybe
+  ( fromJust,
+    fromMaybe,
+    listToMaybe,
+    maybe,
+  )
 import Data.Ord (Down (..), comparing)
 import Data.Set qualified as S
 import Data.Text qualified as T
@@ -25,9 +32,23 @@ import Text.Read (readMaybe)
 
 soln :: FilePath -> IO Int
 soln file = do
-  ls <- T.lines <$> TIO.readFile file
-  print ls
+  (start_line : splitter_lines) <- T.lines <$> TIO.readFile file
+  let start = readStart start_line
+      splitters = map readSplitters splitter_lines
+  putStrLn $ "Start: " ++ show start
+  putStr "Splitters"
+  mapM_ print splitters
   pure 0
+
+readStart :: T.Text -> Int
+readStart =
+  maybe (error "uncons") fst
+    . find ((== 'S') . snd)
+    . zip [0 ..]
+    . T.unpack
+
+readSplitters :: T.Text -> S.Set Int
+readSplitters = S.fromList . map fst . filter ((== '^') . snd) . zip [0..] . T.unpack
 
 readInt :: T.Text -> Int
 readInt = either error fst . decimal
