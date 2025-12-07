@@ -39,11 +39,11 @@ soln file = do
   (start_line : splitter_lines) <- T.lines <$> TIO.readFile file
   let start = readStart start_line
       splitters = map readSplitters splitter_lines
-      (_, collisions) = foldl' collide (S.singleton start, 0) splitters
+      (final_beams, _) = foldl' collide (S.singleton start, 0) splitters
   -- putStrLn $ "Start: " ++ show start
   -- putStr "Splitters"
   -- mapM_ print splitters
-  pure collisions
+  pure $ S.size final_beams
 
 collide :: (Beams, Int) -> Beams -> (Beams, Int)
 collide (beams, colls) splitters = 

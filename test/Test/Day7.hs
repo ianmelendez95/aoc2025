@@ -32,12 +32,12 @@ test =
     describe "soln" $ do
       it "short-input.txt" $ do
         res <- soln "test/Test/Day7/short.txt"
-        res `shouldBe` 21
+        res `shouldBe` 40
 
       it "full-input.txt" $ do
         res <- soln "test/Test/Day7/full.txt"
         putStrLn $ "Solution: " ++ show res
-        res `shouldNotBe` 9194682052782
+        res `shouldNotBe` 0
 
     describe "collide" $ do
       it "single" $ do 
