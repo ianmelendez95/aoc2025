@@ -58,3 +58,7 @@ test =
                   (fromIntegral z - fromIntegral z') ** 2
                 ]
             )
+
+    describe "againstEach" $ do 
+      it "simple" $ do 
+        againstEach (:) "hello" `shouldBe` ["hello", "ehllo", "lehlo", "lleho", "olleh"]

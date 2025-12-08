@@ -3,7 +3,8 @@ module Day8
     Coord (..),
     coordDist0,
     nearCoord0,
-    readCoordsFile
+    readCoordsFile,
+    againstEach
   )
 where
 
@@ -51,8 +52,21 @@ readCoordsFile file = do
   ls <- T.lines <$> TIO.readFile file
   pure $ map readCoord ls
 
-conCoords0 :: [Coord] -> CoordCircs
-conCoords0 (c:cs) = undefined
+conCoords0 :: CoordCircs -> Coord -> [Coord] -> CoordCircs
+conCoords0 circs cs = undefined
+
+pairCoords0 :: [Coord] -> [(Coord, Coord)]
+pairCoords0 = againstEach pairCoord
+  where 
+    pairCoord :: Coord -> [Coord] -> (Coord, Coord)
+    pairCoord c cs = (c,) $ nearCoord0 c cs
+
+againstEach :: forall a b. (a -> [a] -> b) -> [a] -> [b]
+againstEach f = go [] 
+  where 
+    go :: [a] -> [a] -> [b]
+    go _ [] = []
+    go xs' (x:xs) = f x (xs' ++ xs) : go (x : xs') xs
 
 nearCoord0 :: Coord -> [Coord] -> Coord
 nearCoord0 c = minimumBy (comparing (coordDist0 c))
