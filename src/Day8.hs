@@ -1,5 +1,7 @@
 module Day8
   ( soln,
+    Coord (..),
+    coordDist0,
   )
 where
 
@@ -33,6 +35,8 @@ import Text.Read (readMaybe)
 
 data Coord = Coord Int Int Int deriving (Show, Eq)
 
+type CoordCircs = M.Map Coord Int
+
 soln :: FilePath -> IO Int
 soln file = do
   ls <- T.lines <$> TIO.readFile file
@@ -40,6 +44,22 @@ soln file = do
   mapM_ print coords
   print ls
   pure 0
+
+connCoords0 :: [Coord] -> CoordCircs
+connCoords0 (c:cs) = undefined
+
+nearCoord0 :: Coord -> [Coord] -> Coord
+nearCoord0 c cs = undefined
+  where 
+    cDist :: Coord -> Int
+    cDist c' = undefined
+
+coordDist0 :: Coord -> Coord -> Double
+coordDist0 (Coord x y z) (Coord x' y' z') = 
+  sqrt . sum . map square $ zipWith (-) [x, y, z] [x', y', z']
+
+square :: Int -> Double
+square = (** 2) . fromIntegral
 
 readCoord :: T.Text -> Coord
 readCoord line = 
