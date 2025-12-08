@@ -4,7 +4,9 @@ module Day8
     coordDist0,
     nearCoord0,
     readCoordsFile,
-    againstEach
+    againstEach,
+    pairCoords0,
+    ascPairCoords0,
   )
 where
 
@@ -44,7 +46,7 @@ type CoordCircs = M.Map Coord Int
 soln :: FilePath -> IO Int
 soln file = do
   coords <- readCoordsFile file 
-  mapM_ print coords
+  -- mapM_ print coords
   pure 0
 
 readCoordsFile :: FilePath -> IO [Coord]
@@ -55,11 +57,21 @@ readCoordsFile file = do
 conCoords0 :: CoordCircs -> Coord -> [Coord] -> CoordCircs
 conCoords0 circs cs = undefined
 
-pairCoords0 :: [Coord] -> [(Coord, Coord)]
-pairCoords0 = againstEach pairCoord
+ascPairCoords0 :: [Coord] -> [(Coord, Coord)]
+ascPairCoords0 = map snd . sortBy (comparing fst) . pairCoords0
+
+pairCoords0 :: [Coord] -> [(Double, (Coord, Coord))]
+pairCoords0 [] = []
+pairCoords0 (c:cs) = map pairCoord cs ++ pairCoords0 cs
   where 
-    pairCoord :: Coord -> [Coord] -> (Coord, Coord)
-    pairCoord c cs = (c,) $ nearCoord0 c cs
+    pairCoord :: Coord -> (Double, (Coord, Coord))
+    pairCoord c' = (coordDist0 c c', (c, c'))
+
+-- pairCoords0 :: [Coord] -> [(Int, (Coord, Coord))]
+-- pairCoords0 = againstEach pairCoord
+--   where 
+--     pairCoord :: Coord -> [Coord] -> [(Int, (Coord, Coord))]
+--     pairCoord c cs = (\c' -> ) $ nearCoord0 c cs
 
 againstEach :: forall a b. (a -> [a] -> b) -> [a] -> [b]
 againstEach f = go [] 
