@@ -2,6 +2,8 @@ module Day8
   ( soln,
     Coord (..),
     coordDist0,
+    nearCoord0,
+    readCoordsFile
   )
 where
 
@@ -15,7 +17,8 @@ import Data.List
     uncons,
     unsnoc,
     find,
-    foldl'
+    foldl',
+    minimumBy
   )
 import Data.List.Split (chunksOf, splitEvery)
 import Data.Map qualified as M
@@ -39,20 +42,20 @@ type CoordCircs = M.Map Coord Int
 
 soln :: FilePath -> IO Int
 soln file = do
-  ls <- T.lines <$> TIO.readFile file
-  let coords = map readCoord ls
+  coords <- readCoordsFile file 
   mapM_ print coords
-  print ls
   pure 0
 
-connCoords0 :: [Coord] -> CoordCircs
-connCoords0 (c:cs) = undefined
+readCoordsFile :: FilePath -> IO [Coord]
+readCoordsFile file = do 
+  ls <- T.lines <$> TIO.readFile file
+  pure $ map readCoord ls
+
+conCoords0 :: [Coord] -> CoordCircs
+conCoords0 (c:cs) = undefined
 
 nearCoord0 :: Coord -> [Coord] -> Coord
-nearCoord0 c cs = undefined
-  where 
-    cDist :: Coord -> Int
-    cDist c' = undefined
+nearCoord0 c = minimumBy (comparing (coordDist0 c))
 
 coordDist0 :: Coord -> Coord -> Double
 coordDist0 (Coord x y z) (Coord x' y' z') = 

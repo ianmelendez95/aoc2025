@@ -22,18 +22,27 @@ import Test.Hspec
   )
 import Test.QuickCheck
 
+short_input = "test/Test/Day8/short.txt"
+
 test :: SpecWith ()
 test =
   describe "Day8" $ do
     describe "soln" $ do
       it "short-input.txt" $ do
-        res <- soln "test/Test/Day8/short.txt"
+        res <- soln short_input
         res `shouldBe` 0
 
       xit "full-input.txt" $ do
         res <- soln "test/Test/Day8/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
+
+    describe "nearCoord0" $ do 
+      it "first short.txt" $ do 
+        coords <- readCoordsFile short_input 
+        case coords of 
+          -- 425,690,689
+          (c:cs) -> nearCoord0 c cs `shouldBe` Coord 425 690 689
 
     describe "coordDist0" $ do
       it "simple" $ do
