@@ -1,7 +1,7 @@
 module Main (main) where
 
 -- import Test.Day0 (testDay0)
-import Test.Day7 (test)
+import Test.Day8 (test)
 import Test.Hspec
   ( hspec,
   )
