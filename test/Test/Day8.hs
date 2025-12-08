@@ -37,6 +37,13 @@ test =
         res <- soln "test/Test/Day8/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
+
+    describe "conPairs" $ do 
+      it "short" $ do 
+        coords <- readCoordsFile shortInput
+        let pairs = ascPairCoords0 coords
+            Circuits{circuitCount} = conPairs0 pairs
+        circuitCount `shouldBe` 11
     
     describe "ascPairCoords0" $ do 
       it "short" $ do 
