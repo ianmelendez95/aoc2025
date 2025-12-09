@@ -3,6 +3,7 @@ module Day8
     Coord (..),
     Circuits (..),
     conPairs0,
+    circuitSizes,
     coordDist0,
     nearCoord0,
     readCoordsFile,
@@ -67,6 +68,12 @@ coordCircuits (c1, c2) Circuits{circuitMap} = (M.lookup c1 circuitMap, M.lookup 
 
 connectCoord :: Coord -> Int -> Circuits -> Circuits
 connectCoord coord circuit cir@(Circuits{circuitMap}) = cir{circuitMap = M.insert coord circuit circuitMap}
+
+circuitSizes :: Circuits -> M.Map Int Int
+circuitSizes = M.foldr mergeCount M.empty . circuitMap
+  where 
+    mergeCount :: Int -> M.Map Int Int -> M.Map Int Int
+    mergeCount circuit = M.insertWith (+) circuit 1
 
 newCircuit :: Coord -> Coord -> Circuits -> Circuits
 newCircuit coord1 coord2 Circuits{circuitCount, circuitMap} = 

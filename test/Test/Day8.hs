@@ -5,6 +5,8 @@ import Data.Maybe (fromJust)
 import Data.Set qualified as S
 import Data.Text qualified as T
 import Data.Text qualified as TIO
+import Data.List
+import Data.Ord
 import Day8
 import Test.Hspec
   ( Expectation,
@@ -42,7 +44,11 @@ test =
       it "short" $ do 
         coords <- readCoordsFile shortInput
         let pairs = ascPairCoords0 coords
-            Circuits{circuitCount} = conPairs0 pairs
+            circuits@Circuits{circuitCount, circuitMap} = conPairs0 . take 10 $ pairs
+            circuit_sizes = circuitSizes circuits 
+            circuit_sizes_desc = sortBy (comparing (Down . snd)) . M.toList $ circuit_sizes
+        -- mapM_ print $ M.toList circuitMap
+        mapM_ print circuit_sizes_desc
         circuitCount `shouldBe` 11
     
     describe "ascPairCoords0" $ do 
