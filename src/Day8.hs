@@ -69,6 +69,10 @@ coordCircuits (c1, c2) Circuits{circuitMap} = (M.lookup c1 circuitMap, M.lookup 
 connectCoord :: Coord -> Int -> Circuits -> Circuits
 connectCoord coord circuit cir@(Circuits{circuitMap}) = cir{circuitMap = M.insert coord circuit circuitMap}
 
+mergeCircuits :: Int -> Int -> Circuits -> Circuits
+mergeCircuits circuit1 circuit2 circuits@Circuits{circuitMap = c_map} =
+  circuits{circuitMap = M.map (\c -> if c == circuit2 then circuit1 else c) c_map}
+
 circuitSizes :: Circuits -> M.Map Int Int
 circuitSizes = M.foldr mergeCount M.empty . circuitMap
   where 
@@ -87,8 +91,8 @@ conCoords0 :: Circuits -> (Coord, Coord) -> Circuits
 conCoords0 circuits pair@(coord1, coord2) =  
   case coordCircuits pair circuits of 
     (Nothing, Nothing) -> newCircuit coord1 coord2 circuits
-    -- both connected, nothing to do
-    (Just _, Just _) -> circuits
+    -- both connected, merge circuits!
+    (Just circuit1, Just circuit2) -> mergeCircuits circuit1 circuit2 circuits
     -- first one connected, connect the second one
     (Just circuit1, Nothing) -> connectCoord coord2 circuit1 circuits
     (Nothing, Just circuit2) -> connectCoord coord1 circuit2 circuits
