@@ -32,11 +32,11 @@ test =
   describe "Day8" $ do
     describe "soln" $ do
       it "short-input.txt" $ do
-        res <- soln shortInput
+        res <- soln shortInput 10
         res `shouldBe` 0
 
       xit "full-input.txt" $ do
-        res <- soln "test/Test/Day8/full.txt"
+        res <- soln "test/Test/Day8/full.txt" 1000
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
 

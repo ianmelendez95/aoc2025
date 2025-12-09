@@ -42,19 +42,19 @@ import Data.Text.Read
 import Debug.Trace (trace, traceShowId, traceWith)
 import Text.Read (readMaybe)
 
-soln :: FilePath -> Int -> Int -> IO Int
-soln file connection_n max_n = do
+soln :: FilePath -> Int -> IO Int
+soln file connection_n = do
   coords <- readCoordsFile file 
   let pairs = ascPairCoords0 coords
       circuits@Circuits{circuitCount, circuitMap} = conPairs0 . take connection_n $ pairs
       circuit_sizes = circuitSizes circuits 
-      circuit_sizes_desc = map snd . sortBy (comparing Down) . M.elems $ circuit_sizes
-      max_circuit_sizes = (map take max_n $ circuit_sizes_desc)
+      -- circuit_sizes_desc = map snd . sortBy (comparing Down) . M.elems $ circuit_sizes
+      -- max_circuit_sizes = (map take max_n $ circuit_sizes_desc)
 
-      result :: Int
-      result = product . take max_n $ circuit_sizes_desc
+      -- result :: Int
+      -- result = product . take max_n $ circuit_sizes_desc
 
-  pure result
+  pure 0
 
 readCoordsFile :: FilePath -> IO [Coord]
 readCoordsFile file = do 
