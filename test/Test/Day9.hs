@@ -33,9 +33,13 @@ test =
     describe "soln" $ do
       it "short-input.txt" $ do
         res <- soln shortInput
-        res `shouldBe` 0
+        res `shouldBe` 50
 
       xit "full-input.txt" $ do
         res <- soln "test/Test/Day9/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
+    
+    describe "pairArea0" $ do 
+      it "2,5 11,1" $ do 
+        pairArea0 ((2,5), (11,1)) `shouldBe` 50
