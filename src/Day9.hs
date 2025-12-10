@@ -42,21 +42,45 @@ data Edge
   | VEdge Int Int Int
   deriving (Show, Eq, Ord)
 
+data Edges = Edges {
+  vEdges :: [Edge],
+  hEdges :: [Edge]
+}
+
 soln :: FilePath -> IO Int
 soln file = do
   coords <- readCoordsFile file
   let max_area = bigRect0 . pairs0 $ coords
-      edges = coordEdges0 coords
-  putStrLn $ "len: " ++ show (length edges)
-  mapM_ print edges
+      all_edges = coordEdges0 coords
+      Edges{vEdges, hEdges} = reduceEdges0 all_edges
+  putStrLn "\n--- Edges:"
+  mapM_ print all_edges
+  putStrLn "\n--- Vert Edges: "
+  mapM_ print vEdges
+  putStrLn "\n--- Horiz Edges: "
+  mapM_ print hEdges
   pure max_area
 
+reduceEdges0 :: [Edge] -> Edges
+reduceEdges0 es = 
+  let Edges{vEdges, hEdges} = foldl' mergeEdges0 (Edges [] []) es
+   in Edges (sort vEdges) (sort hEdges)
+
+mergeEdges0 :: Edges -> Edge -> Edges
+mergeEdges0 es@Edges{vEdges} e@VEdge{} = es{vEdges = e : vEdges}
+mergeEdges0 es@Edges{hEdges} e@HEdge{} = es{hEdges = e : hEdges}
+
 coordEdges0 :: [Coord] -> [Edge]
-coordEdges0 [] = []
-coordEdges0 [_] = []
-coordEdges0 (c1@(x1, y1) : c2@(x2, y2) : cs)
-  | x1 == x2 = VEdge x1 (min y1 y2) (max y1 y2) : coordEdges0 (c2 : cs)
-  | y1 == y2 = HEdge y1 (min x1 x2) (max x1 x2) : coordEdges0 (c2 : cs)
+coordEdges0 = zipPairs0 coordEdge0 
+
+zipPairs0 :: (Coord -> Coord -> Edge) -> [Coord] -> [Edge]
+zipPairs0 _ [] = error "no coords"
+zipPairs0 f cs@(c:cs_tail) = zipWith f cs (cs_tail ++ [c])
+
+coordEdge0 :: Coord -> Coord -> Edge
+coordEdge0 c1@(x1, y1) c2@(x2, y2)
+  | x1 == x2 = VEdge x1 (min y1 y2) (max y1 y2)
+  | y1 == y2 = HEdge y1 (min x1 x2) (max x1 x2)
   | otherwise = error $ "not straight: " ++ show (c1, c2)
 
 bigRect0 :: [(Coord, Coord)] -> Int
