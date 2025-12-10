@@ -39,6 +39,14 @@ test =
         res <- soln "test/Test/Day9/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
+
+    describe "bigRects0" $ do 
+      it "finds biggest" $ do 
+        coords <- readCoordsFile shortInput
+        let big_rects = bigRects0 (pairs0 $ sort coords)
+        case big_rects of 
+          [] -> error $ "no rects"
+          (rect1:_) -> pairArea0 rect1 `shouldBe` 50
     
     describe "pairArea0" $ do 
       it "2,5 11,1" $ do 

@@ -1,6 +1,9 @@
 module Day9
   ( soln,
+    readCoordsFile,
+    bigRects0,
     pairArea0,
+    pairs0,
   )
 where
 
@@ -47,18 +50,27 @@ data Edges = Edges {
   hEdges :: [Edge]
 }
 
+edgePos :: Edge -> Int
+edgePos (HEdge p _ _) = p
+edgePos (VEdge p _ _) = p
+
+edgeRange :: Edge -> (Int, Int)
+edgeRange (HEdge _ s e) = (s, e)
+edgeRange (VEdge _ s e) = (s, e)
+
 soln :: FilePath -> IO Int
 soln file = do
   coords <- readCoordsFile file
-  let max_area = bigRect0 . pairs0 $ coords
+  let big_rects = bigRects0 (pairs0 $ sort coords)
+      max_area = bigRect0 . pairs0 $ coords
       all_edges = coordEdges0 coords
       Edges{vEdges, hEdges} = reduceEdges0 all_edges
-  putStrLn "\n--- Edges:"
-  mapM_ print all_edges
-  putStrLn "\n--- Vert Edges: "
-  mapM_ print vEdges
-  putStrLn "\n--- Horiz Edges: "
-  mapM_ print hEdges
+  -- putStrLn "\n--- Edges:"
+  -- mapM_ print all_edges
+  -- putStrLn "\n--- Vert Edges: "
+  -- mapM_ print vEdges
+  -- putStrLn "\n--- Horiz Edges: "
+  -- mapM_ print hEdges
   pure max_area
 
 reduceEdges0 :: [Edge] -> Edges
@@ -82,6 +94,9 @@ coordEdge0 c1@(x1, y1) c2@(x2, y2)
   | x1 == x2 = VEdge x1 (min y1 y2) (max y1 y2)
   | y1 == y2 = HEdge y1 (min x1 x2) (max x1 x2)
   | otherwise = error $ "not straight: " ++ show (c1, c2)
+
+bigRects0 :: [(Coord, Coord)] -> [(Coord, Coord)]
+bigRects0 = map snd . sortBy (comparing (Down . fst)) . map (\cs -> (pairArea0 cs, cs))
 
 bigRect0 :: [(Coord, Coord)] -> Int
 bigRect0 = maximum . map pairArea0
