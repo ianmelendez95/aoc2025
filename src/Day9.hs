@@ -2,8 +2,10 @@ module Day9
   ( soln,
     readCoordsFile,
     bigRects0,
+    bigRectsCoords0,
     pairArea0,
     pairs0,
+    edgesIntersect0,
   )
 where
 
@@ -40,6 +42,8 @@ import Text.Read (readMaybe)
 
 type Coord = (Int, Int)
 
+type Rect = (Coord, Coord)
+
 data Edge
   = HEdge Int Int Int
   | VEdge Int Int Int
@@ -72,6 +76,29 @@ soln file = do
   -- putStrLn "\n--- Horiz Edges: "
   -- mapM_ print hEdges
   pure max_area
+
+bigRectsCoords0 :: [Coord] -> [(Coord, Coord)]
+bigRectsCoords0 = bigRects0 . pairs0 . sort
+
+edgesIntersect0 :: Edge -> Edge -> Bool
+edgesIntersect0 HEdge{} HEdge{} = False
+edgesIntersect0 VEdge{} VEdge{} = False
+edgesIntersect0 (HEdge y x1 x2) (VEdge x y1 y2) = between y1 y2 y && between x1 x2 x
+edgesIntersect0 (VEdge x y1 y2) (HEdge y x1 x2) = between y1 y2 y && between x1 x2 x 
+
+rectContains0 :: Rect -> Edge -> Bool
+rectContains0 ((x1, y1), (x2, y2)) (HEdge y x1_e x2_e) = between y y1 y2 && (between x1 x2 x1_e || between x1 x2 x2_e)
+rectContains0 ((x1, y1), (x2, y2)) (VEdge x y1_e y2_e) = between x x1 x2 && (between y1 y2 y1_e || between y1 y2 y2_e)
+
+line1DOverlap0 :: (Int, Int) -> (Int, Int) -> Bool
+line1DOverlap0 line1 line2 = 
+  case (sortLine line1, sortLine line2) of 
+    ((s1, e1), (s2, e2)) -> s1 <= e2 && e1 >= s2
+  where 
+    sortLine (r1, r2) = if r1 > r2 then (r2, r1) else (r1, r2)
+
+between :: Int -> Int -> Int -> Bool
+between bet ween x = x > min bet ween && x < max bet ween
 
 reduceEdges0 :: [Edge] -> Edges
 reduceEdges0 es = 

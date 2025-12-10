@@ -40,13 +40,21 @@ test =
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
 
+    -- describe "rectValid0" $ do
+    --   it "biggest invalid" $ do 
+    --     coords <- readCoordsFile shortInput
+    --     let biggest = ((2,3), (11,7))
+
+
     describe "bigRects0" $ do 
       it "finds biggest" $ do 
         coords <- readCoordsFile shortInput
-        let big_rects = bigRects0 (pairs0 $ sort coords)
+        let big_rects = bigRectsCoords0 coords
         case big_rects of 
           [] -> error $ "no rects"
-          (rect1:_) -> pairArea0 rect1 `shouldBe` 50
+          (rect1:_) -> do 
+            rect1 `shouldBe` ((2,3), (11,7))
+            pairArea0 rect1 `shouldBe` 50
     
     describe "pairArea0" $ do 
       it "2,5 11,1" $ do 
