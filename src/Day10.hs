@@ -3,7 +3,8 @@
 module Day10
   ( soln,
     Mach (..),
-    pMachine
+    pMachine,
+    pressButton0
   )
 where
 
@@ -40,6 +41,8 @@ import Debug.Trace (trace, traceShowId, traceWith)
 import Text.Read (readMaybe)
 import Data.Void
 import Parse qualified as P
+import Data.Sequence qualified as Seq
+import Data.Sequence (Seq)
 
 type Lights = S.Set Int
 type Button = S.Set Int
@@ -52,6 +55,9 @@ soln file = do
   let machs = map readMachine t_lines
   mapM_ print machs
   pure 0
+
+pressButton0 :: Lights -> Button -> Lights
+pressButton0 = S.symmetricDifference
 
 readMachine :: T.Text -> Mach
 readMachine = P.parse pMachine

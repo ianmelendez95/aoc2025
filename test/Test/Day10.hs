@@ -40,6 +40,10 @@ test =
         res <- soln "test/Test/Day10/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
+    
+    describe "pressButton" $ do 
+      it "simple press" $ do 
+        pressButton0 (S.fromList [1, 2]) (S.singleton 3) `shouldBe` S.fromList [1, 2, 3]
 
     describe "pMachine" $ do 
       it "parses first" $ do 

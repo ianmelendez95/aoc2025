@@ -1,5 +1,7 @@
 packages: aoc2025.cabal
 
+allow-newer: containers
+
 package *
   optimization: False
 
