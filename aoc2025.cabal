@@ -81,6 +81,7 @@ library
     -- Modules exported by the library.
     exposed-modules:  
       MyLib
+      Parse
       Day0
       Day1
       Day3

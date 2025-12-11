@@ -36,11 +36,8 @@ import Data.Text.IO qualified as TIO
 import Data.Text.Read
 import Debug.Trace (trace, traceShowId, traceWith)
 import Text.Read (readMaybe)
--- import Text.Megaparsec 
---   ( Parsec,
---   )
-
--- type Parser = Parsec ()
+import Data.Void
+import Parse
 
 type Lights = S.Set Int
 type Button = S.Set Int
@@ -64,5 +61,37 @@ readMachine txt =
 -- readLights :: T.Text -> S.Set Int
 -- readLights lights_txt = T.map
 
+-- pMachine :: Parser Mach
+-- pMachine = Mach <$> pLights <*> pButtons
+--
+-- pLights :: Parser Lights
+-- pLights = 
+
 readInt :: T.Text -> Int
 readInt = either error fst . decimal
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
