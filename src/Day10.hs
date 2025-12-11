@@ -48,20 +48,13 @@ data Mach = Mach Lights [Button] deriving (Show, Eq)
 
 soln :: FilePath -> IO Int
 soln file = do
-  content <- TIO.readFile file
-  print content
+  t_lines <- T.lines <$> TIO.readFile file
+  let machs = map readMachine t_lines
+  mapM_ print machs
   pure 0
 
 readMachine :: T.Text -> Mach
-readMachine txt = 
-  case T.span (/= ']') . T.drop 1 $ txt of 
-    (T.Empty, _) -> error "parse nothing"
-    (_, T.Empty) -> error "parse rest nothing"
-    (lights_txt, _ :< rest_txt) -> 
-      undefined
-
--- readLights :: T.Text -> S.Set Int
--- readLights lights_txt = T.map
+readMachine = P.parse pMachine
 
 pMachine :: P.Parser Mach
 pMachine = Mach <$> P.lexeme pLights <*> P.some (P.lexeme pButton)
