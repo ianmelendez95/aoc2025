@@ -2,6 +2,8 @@
 
 module Day10
   ( soln,
+    Mach (..),
+    pMachine
   )
 where
 
@@ -42,7 +44,7 @@ import Parse qualified as P
 type Lights = S.Set Int
 type Button = S.Set Int
 
-data Mach = Mach Lights [Button]
+data Mach = Mach Lights [Button] deriving (Show, Eq)
 
 soln :: FilePath -> IO Int
 soln file = do
@@ -62,7 +64,7 @@ readMachine txt =
 -- readLights lights_txt = T.map
 
 pMachine :: P.Parser Mach
-pMachine = Mach <$> pLights <*> P.some pButton
+pMachine = Mach <$> P.lexeme pLights <*> P.some (P.lexeme pButton)
 
 pButton :: P.Parser Button 
 pButton = S.fromList <$> P.between (P.char '(') (P.char ')') (P.sepBy1 P.decimal (P.symbol ","))
@@ -70,7 +72,7 @@ pButton = S.fromList <$> P.between (P.char '(') (P.char ')') (P.sepBy1 P.decimal
 pLights :: P.Parser Lights
 pLights = do
   light_states <- P.between (P.char '[') (P.char ']') $ P.some pLight
-  pure . S.fromList $ map fst . filter snd . zip [1..] $ light_states
+  pure . S.fromList $ map fst . filter snd . zip [0..] $ light_states
 
 pLight :: P.Parser Bool
 pLight = (== '#') <$> P.satisfy (\c -> c == '.' || c == '#')

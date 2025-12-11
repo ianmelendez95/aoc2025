@@ -1,5 +1,6 @@
 module Parse (
   Parser,
+  parse,
   symbol,
   lexeme,
   between,
@@ -10,13 +11,19 @@ module Parse (
   L.decimal
   ) where 
 
-import Text.Megaparsec
+import Text.Megaparsec hiding (parse)
 import Text.Megaparsec.Char qualified as C
 import Text.Megaparsec.Char.Lexer qualified as L
 import Data.Void
 import Data.Text qualified as T
 
 type Parser = Parsec Void T.Text
+
+parse :: Parser a -> T.Text -> a
+parse p txt = 
+  case runParser p "test.txt" txt of 
+    Right r -> r
+    Left e -> error . errorBundlePretty $ e
 
 symbol :: T.Text -> Parser T.Text
 symbol = L.symbol space
