@@ -37,7 +37,7 @@ import Data.Text.Read
 import Debug.Trace (trace, traceShowId, traceWith)
 import Text.Read (readMaybe)
 import Data.Void
-import Parse
+import Parse qualified as P
 
 type Lights = S.Set Int
 type Button = S.Set Int
@@ -61,11 +61,19 @@ readMachine txt =
 -- readLights :: T.Text -> S.Set Int
 -- readLights lights_txt = T.map
 
--- pMachine :: Parser Mach
--- pMachine = Mach <$> pLights <*> pButtons
---
--- pLights :: Parser Lights
--- pLights = 
+pMachine :: P.Parser Mach
+pMachine = Mach <$> pLights <*> P.some pButton
+
+pButton :: P.Parser Button 
+pButton = S.fromList <$> P.between (P.char '(') (P.char ')') (P.sepBy1 P.decimal (P.symbol ","))
+
+pLights :: P.Parser Lights
+pLights = do
+  light_states <- P.between (P.char '[') (P.char ']') $ P.some pLight
+  pure . S.fromList $ map fst . filter snd . zip [1..] $ light_states
+
+pLight :: P.Parser Bool
+pLight = (== '#') <$> P.satisfy (\c -> c == '.' || c == '#')
 
 readInt :: T.Text -> Int
 readInt = either error fst . decimal
