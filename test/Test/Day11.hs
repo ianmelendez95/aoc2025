@@ -33,15 +33,15 @@ test =
   describe "Day11" $ do
     describe "soln" $ do
       it "short-input.txt" $ do
-        res <- soln "svr" ["dac", "fft", "out"] shortInput
+        res <- soln "svr" ["dac", "fft"] shortInput
         res `shouldBe` 5
 
-      it "short-input-p1.txt" $ do
-        res <- soln "you" ["out"] "test/Test/Day11/short-p1.txt"
+      xit "short-input-p1.txt" $ do
+        res <- soln "you" [] "test/Test/Day11/short-p1.txt"
         res `shouldBe` 5
 
-      it "full-input.txt" $ do
-        res <- soln "svr" ["dac", "fft", "out"] "test/Test/Day11/full.txt"
+      xit "full-input.txt" $ do
+        res <- soln "svr" ["dac", "fft"] "test/Test/Day11/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
 

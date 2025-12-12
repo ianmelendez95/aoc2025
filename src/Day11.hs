@@ -61,7 +61,7 @@ nextNodes0 cur_node = gets nextNodesS
   where
     nextNodesS :: TravD -> ([T.Text], Int)
     nextNodesS TravD {visited, graph} =
-      let next_nodes = graph M.! cur_node
+      let next_nodes = fromMaybe (error $ "no member" ++ show cur_node) $ M.lookup cur_node graph -- graph M.! cur_node
           unvisited_nodes = filter (not . (`M.member` visited)) next_nodes
           visited_sum = sum $ mapMaybe (`M.lookup` visited) next_nodes 
        in (unvisited_nodes, visited_sum)
@@ -70,15 +70,15 @@ soln :: T.Text -> [T.Text] -> FilePath -> IO Int
 soln start search_nodes file = do
   t_lines <- T.lines <$> TIO.readFile file
   let graph = readGraph t_lines
-  pure $ evalState (travNodes0 search_nodes start) (initTravD start graph)
+  pure $ evalState (travNodes0 (S.fromList search_nodes) start) (initTravD start graph)
 
-travNodes0 :: [T.Text] -> T.Text -> TravS Int
-travNodes0 [] _ = pure 1
-travNodes0 all_search_nodes@(search_node : search_nodes) cur_node 
-  | search_node == cur_node = travNodes0 search_nodes cur_node
+travNodes0 :: Set T.Text -> T.Text -> TravS Int
+travNodes0 search_nodes "out" = pure $ if S.null search_nodes then 1 else 0
+travNodes0 search_nodes cur_node 
+  | cur_node `S.member` search_nodes = travNodes0 (S.delete cur_node search_nodes) (trace ("hit: " ++ show (cur_node, search_nodes)) cur_node)
   | otherwise = do
-      (unvisited_nodes, visited_sum) <- nextNodes0 cur_node
-      unvisited_sum <- sum <$> mapM (travNodes0 all_search_nodes) unvisited_nodes
+      (unvisited_nodes, visited_sum) <- traceWith (\next -> "next: " ++ show (cur_node, search_nodes, next)) <$> nextNodes0 cur_node
+      unvisited_sum <- sum <$> mapM (travNodes0 search_nodes) unvisited_nodes
       let cur_node_sum = visited_sum + unvisited_sum
       modify (\t@TravD{visited} -> t{visited = M.insert cur_node cur_node_sum visited})
       pure cur_node_sum
