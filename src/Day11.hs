@@ -43,11 +43,10 @@ import Debug.Trace (trace, traceShowId, traceWith)
 import Parse qualified as P
 import Text.Read (readMaybe)
 
-type Graph = M.Map T.Text (S.Set T.Text)
+type Graph = M.Map T.Text [T.Text]
 
 data TravD = TravD
   { visited :: S.Set T.Text,
-    queue :: Seq (T.Text, Int),
     graph :: Graph
   }
 
@@ -55,63 +54,46 @@ type TravS = State TravD
 
 initTravD :: Graph -> TravD
 initTravD graph = 
-  let init_nodes = graph M.! "you"
-   in TravD 
-        { visited = S.singleton "you",
-          queue = Seq.fromList . map (,0) . S.toList $ init_nodes,
-          graph
-        }
+  TravD 
+    { visited = S.singleton "you",
+      graph
+    }
 
-curNode :: TravS (T.Text, Int)
-curNode = state curNodeS
+nextNodes0 :: T.Text -> TravS [T.Text]
+nextNodes0 cur_node = state nextNodesS
   where
-    curNodeS :: TravD -> ((T.Text, Int), TravD)
-    curNodeS t@TravD {queue} =
-      case Seq.viewl queue of
-        Seq.EmptyL -> error "queue empty!!"
-        (n Seq.:< nodes) -> (n, t {queue = nodes})
-
-nextNodes0 :: T.Text -> Int -> TravS (Set T.Text)
-nextNodes0 cur_node cur_depth = state nextNodesS
-  where
-    nextNodesS :: TravD -> (Set T.Text, TravD)
-    nextNodesS trav_d@TravD {visited, graph, queue} =
-      let next_nodes = S.difference visited $ graph M.! cur_node
+    nextNodesS :: TravD -> ([T.Text], TravD)
+    nextNodesS trav_d@TravD {visited, graph} =
+      let next_nodes = filter (not . (`S.member` visited)) $ graph M.! cur_node
        in ( next_nodes,
             trav_d
-              { visited = S.union visited next_nodes,
-                queue = seqConcat queue (map (, cur_depth + 1) . S.toList $ next_nodes)
+              { visited = foldr (\n vs -> if n == "out" then vs else S.insert n vs) visited next_nodes
               }
           )
-
-seqConcat :: Seq a -> [a] -> Seq a
-seqConcat = foldl' (Seq.|>)
 
 soln :: FilePath -> IO Int
 soln file = do
   t_lines <- T.lines <$> TIO.readFile file
   let graph = readGraph t_lines
-  pure $ evalState travNodes0 (initTravD graph)
+  pure $ evalState (travNodes0 "you") (initTravD graph)
 
-travNodes0 :: TravS Int
-travNodes0 = do
-  (cur_node, cur_depth) <- curNode
-  next_nodes <- nextNodes0 cur_node cur_depth
-  if T.pack "out" `elem` next_nodes
-    then pure cur_depth
-    else travNodes0
+travNodes0 :: T.Text -> TravS Int
+travNodes0 "out" = pure 1
+travNodes0 cur_node = do
+  next_nodes <- traceWith (\next_nodes -> "traverse: " ++ show (cur_node, next_nodes)) <$> nextNodes0 cur_node
+  sum <$> mapM travNodes0 next_nodes
 
 readGraph :: [T.Text] -> Graph
 readGraph txt_lines = 
   let nodes = map readLine txt_lines
    in M.fromList nodes
 
-readLine :: T.Text -> (T.Text, Set T.Text)
+readLine :: T.Text -> (T.Text, [T.Text])
 readLine txt_line =
   case T.words txt_line of
     (start_word : nexts) ->
       case T.unsnoc start_word of
-        Just (start, _) -> (start, S.fromList nexts)
+        Just (start, _) -> (start, nexts)
         Nothing -> error $ "unsnoc" ++ show start_word
     _ -> error $ "words" ++ show txt_line
 
