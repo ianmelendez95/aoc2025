@@ -24,11 +24,6 @@ import Data.List
 import Data.List.Split (chunksOf, splitEvery)
 import Data.Map qualified as M
 import Data.Maybe
-  ( fromJust,
-    fromMaybe,
-    listToMaybe,
-    maybe,
-  )
 import Data.Ord (Down (..), comparing)
 import Data.Sequence (Seq, pattern (:<|), pattern (:|>))
 import Data.Sequence qualified as Seq
@@ -46,7 +41,7 @@ import Text.Read (readMaybe)
 type Graph = M.Map T.Text [T.Text]
 
 data TravD = TravD
-  { visited :: S.Set T.Text,
+  { visited :: M.Map T.Text Int,
     graph :: Graph
   }
 
@@ -55,21 +50,19 @@ type TravS = State TravD
 initTravD :: Graph -> TravD
 initTravD graph = 
   TravD 
-    { visited = S.singleton "you",
+    { visited = M.singleton "you" 0,
       graph
     }
 
-nextNodes0 :: T.Text -> TravS [T.Text]
-nextNodes0 cur_node = state nextNodesS
+nextNodes0 :: T.Text -> TravS ([T.Text], Int)
+nextNodes0 cur_node = gets nextNodesS
   where
-    nextNodesS :: TravD -> ([T.Text], TravD)
-    nextNodesS trav_d@TravD {visited, graph} =
-      let next_nodes = filter (not . (`S.member` visited)) $ graph M.! cur_node
-       in ( next_nodes,
-            trav_d
-              { visited = foldr (\n vs -> if n == "out" then vs else S.insert n vs) visited next_nodes
-              }
-          )
+    nextNodesS :: TravD -> ([T.Text], Int)
+    nextNodesS TravD {visited, graph} =
+      let next_nodes = graph M.! cur_node
+          unvisited_nodes = filter (not . (`M.member` visited)) next_nodes
+          visited_sum = sum $ mapMaybe (`M.lookup` visited) next_nodes 
+       in (unvisited_nodes, visited_sum)
 
 soln :: FilePath -> IO Int
 soln file = do
@@ -80,8 +73,11 @@ soln file = do
 travNodes0 :: T.Text -> TravS Int
 travNodes0 "out" = pure 1
 travNodes0 cur_node = do
-  next_nodes <- traceWith (\next_nodes -> "traverse: " ++ show (cur_node, next_nodes)) <$> nextNodes0 cur_node
-  sum <$> mapM travNodes0 next_nodes
+  (unvisited_nodes, visited_sum) <- traceWith (\next_nodes -> "traverse: " ++ show (cur_node, next_nodes)) <$> nextNodes0 cur_node
+  unvisited_sum <- sum <$> mapM travNodes0 unvisited_nodes
+  let cur_node_sum = visited_sum + unvisited_sum
+  modify (\t@TravD{visited} -> t{visited = M.insert cur_node cur_node_sum visited})
+  pure cur_node_sum
 
 readGraph :: [T.Text] -> Graph
 readGraph txt_lines = 
