@@ -8,7 +8,9 @@ module Parse (
   satisfy,
   some,
   sepBy1,
-  L.decimal
+  L.decimal,
+  takeWhileP,
+  takeWhile1P
   ) where 
 
 import Text.Megaparsec hiding (parse)

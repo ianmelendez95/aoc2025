@@ -6,7 +6,7 @@ import Data.Maybe (fromJust)
 import Data.Ord
 import Data.Set qualified as S
 import Data.Text qualified as T
-import Data.Text qualified as TIO
+import Data.Text.IO qualified as TIO
 import Day12
 import Parse qualified as P
 import Test.Hspec
@@ -40,4 +40,9 @@ test =
       --   res <- soln "svr" ["dac", "fft"] "test/Test/Day12/full.txt"
       --   putStrLn $ "Solution: " ++ show res
       --   res `shouldNotBe` 0
+
+    describe "pShape" $ do 
+      it "parses first" $ do 
+        content <- TIO.readFile shortInput
+        P.parse pShape content `shouldBe` 7
 

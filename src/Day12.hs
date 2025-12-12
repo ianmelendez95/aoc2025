@@ -2,6 +2,7 @@
 
 module Day12
   ( soln,
+    pShape
   )
 where
 
@@ -38,11 +39,48 @@ import Debug.Trace (trace, traceShowId, traceWith)
 import Parse qualified as P
 import Text.Read (readMaybe)
 
+type Shape = Int
+data Region = Region (Int, Int) [Int]
+
 soln :: FilePath -> IO Int
 soln file = do
   t_lines <- T.lines <$> TIO.readFile file
   mapM_ TIO.putStrLn t_lines
   pure 0
+
+pShape :: P.Parser Shape
+pShape = do 
+  _ <- P.lexeme $ (P.decimal :: P.Parser Int) >> P.char ':'
+  shape_lines <- P.some (P.lexeme pShapeLine) 
+  pure $ shapeLinesArea shape_lines
+  where 
+    shapeLinesArea :: [T.Text] -> Int
+    shapeLinesArea = sum . map (T.length . T.filter (== '#'))
+
+    pShapeLine :: P.Parser T.Text
+    pShapeLine = P.takeWhile1P Nothing (\c -> c == '#' || c == '.')
+
+-- readInput :: [T.Text] -> ([Shape], [])
+-- readInput input_txt = undefined
+--   where 
+--     parseShapes :: ([Shape], [T.Text]) -> ([Shape], [T.Text])
+--     parseShapes state@(shapes, next_input) = 
+--       case break (== "") next_input of 
+--         ([], _) -> state
+--         (shape_txt, rest_input) -> (readShape shape_txt : shapes, rest_input)
+--
+--     readShape :: [T.Text] -> Shape
+--     readShape = sum . concatMap (T.length . T.filter (== '#'))
+--
+--     scanShapes :: ([[T.Text]], [T.Text]) -> [T.Text] -> ([[T.Text]], [T.Text])
+--     scanShapes (shapes, next_input) = 
+--       case scanShape next_input of 
+--         Nothing -> ([], next_input)
+--         Just (shape, rest_input) -> scanShapes (shape : shapes, rest_input)
+--
+--     isIndexLine :: T.Text -> Bool
+--     isIndexLine txt = (not . ("x" `T.isInfixOf` txt) && ":" )
+
 
 readInt :: T.Text -> Int
 readInt = either error fst . decimal
