@@ -36,7 +36,7 @@ test =
         res <- soln shortInput
         res `shouldBe` 5
 
-      xit "full-input.txt" $ do
+      it "full-input.txt" $ do
         res <- soln "test/Test/Day11/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
