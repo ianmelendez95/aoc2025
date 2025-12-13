@@ -50,9 +50,9 @@ data Region = Region Int [Int] deriving Show
 
 soln :: FilePath -> IO Int
 soln file = do
-  t_lines <- T.lines <$> TIO.readFile file
-  mapM_ TIO.putStrLn t_lines
-  pure 0
+  content <- TIO.readFile file
+  let (shapes, regions) = P.parse pInput content
+  pure . length $ filter (shapesFit shapes) regions
 
 shapesFit :: [Shape] -> Region -> Bool
 shapesFit shapes (Region area shape_counts) = 
