@@ -44,6 +44,14 @@ test =
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
 
+    describe "pInput" $ do 
+      it "parses short" $ do 
+        content <- TIO.readFile shortInput
+        let (shapes, regions) = P.parse pInput content
+        putStrLn $ "REGIONS: " ++ show regions
+        length shapes `shouldBe` 6
+        length regions `shouldBe` 3
+
     describe "pRegion" $ do 
       it "parses first" $ do 
         let (Region a ss) = P.parse pRegion "48x42: 43 59 54 46 51 56"

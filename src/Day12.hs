@@ -3,6 +3,7 @@
 module Day12
   ( soln,
     Region (..),
+    pInput,
     pShape,
     pRegion
   )
@@ -10,6 +11,7 @@ where
 
 import Control.Applicative (liftA2)
 import Control.Monad.State
+import Control.Monad
 import Data.List
   ( find,
     foldl',
@@ -24,6 +26,7 @@ import Data.List
     uncons,
     unsnoc,
   )
+import Data.Functor
 import Data.List.Split (chunksOf, splitEvery)
 import Data.Map qualified as M
 import Data.Maybe
@@ -42,13 +45,16 @@ import Parse qualified as P
 import Text.Read (readMaybe)
 
 type Shape = Int
-data Region = Region Int [Int]
+data Region = Region Int [Int] deriving Show
 
 soln :: FilePath -> IO Int
 soln file = do
   t_lines <- T.lines <$> TIO.readFile file
   mapM_ TIO.putStrLn t_lines
   pure 0
+
+pInput :: P.Parser ([Shape], [Region])
+pInput = liftM2 (,) (P.many (P.try pShape)) (P.many (P.lexeme pRegion))
 
 pShape :: P.Parser Shape
 pShape = do 
@@ -65,8 +71,7 @@ pShape = do
 pRegion :: P.Parser Region
 pRegion = do
   r_area <- P.lexeme $ liftA2 (*) (P.decimal <* P.char 'x') (P.decimal <* P.char ':') 
-  Region r_area <$> P.some (P.lexeme P.decimal)
-
+  Region r_area <$> P.some (P.hlexeme P.decimal) <* ((P.eol $> ()) P.<|> P.eof)
 
 
 -- readInput :: [T.Text] -> ([Shape], [])

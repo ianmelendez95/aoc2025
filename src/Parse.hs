@@ -3,6 +3,9 @@ module Parse (
   parse,
   symbol,
   lexeme,
+  hsymbol,
+  hlexeme,
+  eof,
   between,
   C.char,
   satisfy,
@@ -13,7 +16,9 @@ module Parse (
   takeWhile1P,
   try,
   many,
-  liftA2
+  liftA2,
+  C.eol,
+  (<|>),
   ) where 
 
 import Text.Megaparsec hiding (parse)
@@ -29,6 +34,15 @@ parse p txt =
   case runParser p "test.txt" txt of 
     Right r -> r
     Left e -> error . errorBundlePretty $ e
+
+hsymbol :: T.Text -> Parser T.Text
+hsymbol = L.symbol hspace
+
+hlexeme :: Parser a -> Parser a
+hlexeme = L.lexeme hspace
+
+hspace :: Parser ()
+hspace = L.space C.hspace1 (L.skipLineComment "--") (L.skipBlockComment "{--" "--}")
 
 symbol :: T.Text -> Parser T.Text
 symbol = L.symbol space
