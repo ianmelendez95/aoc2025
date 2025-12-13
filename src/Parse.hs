@@ -10,7 +10,10 @@ module Parse (
   sepBy1,
   L.decimal,
   takeWhileP,
-  takeWhile1P
+  takeWhile1P,
+  try,
+  many,
+  liftA2
   ) where 
 
 import Text.Megaparsec hiding (parse)

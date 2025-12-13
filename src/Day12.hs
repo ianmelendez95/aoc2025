@@ -2,7 +2,9 @@
 
 module Day12
   ( soln,
-    pShape
+    Region (..),
+    pShape,
+    pRegion
   )
 where
 
@@ -40,7 +42,7 @@ import Parse qualified as P
 import Text.Read (readMaybe)
 
 type Shape = Int
-data Region = Region (Int, Int) [Int]
+data Region = Region Int [Int]
 
 soln :: FilePath -> IO Int
 soln file = do
@@ -59,6 +61,13 @@ pShape = do
 
     pShapeLine :: P.Parser T.Text
     pShapeLine = P.takeWhile1P Nothing (\c -> c == '#' || c == '.')
+
+pRegion :: P.Parser Region
+pRegion = do
+  r_area <- P.lexeme $ liftA2 (*) (P.decimal <* P.char 'x') (P.decimal <* P.char ':') 
+  Region r_area <$> P.some (P.lexeme P.decimal)
+
+
 
 -- readInput :: [T.Text] -> ([Shape], [])
 -- readInput input_txt = undefined
