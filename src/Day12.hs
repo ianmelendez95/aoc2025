@@ -3,6 +3,7 @@
 module Day12
   ( soln,
     Region (..),
+    shapesFit,
     pInput,
     pShape,
     pRegion
@@ -52,6 +53,13 @@ soln file = do
   t_lines <- T.lines <$> TIO.readFile file
   mapM_ TIO.putStrLn t_lines
   pure 0
+
+shapesFit :: [Shape] -> Region -> Bool
+shapesFit shapes (Region area shape_counts) = 
+  area >= shapesArea shapes shape_counts
+
+shapesArea :: [Shape] -> [Int] -> Int
+shapesArea shapes = sum . zipWith (*) shapes
 
 pInput :: P.Parser ([Shape], [Region])
 pInput = liftM2 (,) (P.many (P.try pShape)) (P.many (P.lexeme pRegion))

@@ -44,6 +44,15 @@ test =
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
 
+    describe "shapesFit" $ do 
+      it "short" $ do 
+        content <- TIO.readFile shortInput
+        let (shapes, regions) = P.parse pInput content
+        case regions of 
+          (region1 : _) -> do 
+            shapesFit shapes region1 `shouldBe` True
+          _ -> error "parse"
+
     describe "pInput" $ do 
       it "parses short" $ do 
         content <- TIO.readFile shortInput
