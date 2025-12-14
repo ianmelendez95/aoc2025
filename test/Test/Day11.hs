@@ -43,7 +43,7 @@ test =
       --   res <- soln "test/Test/Day11/short-p1.txt"
       --   res `shouldBe` 5
 
-      xit "full-input.txt" $ do
+      it "full-input.txt" $ do
         res <- soln fullInput
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
