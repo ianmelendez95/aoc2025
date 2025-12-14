@@ -28,20 +28,23 @@ import Test.QuickCheck
 shortInput :: FilePath
 shortInput = "test/Test/Day11/short.txt"
 
+fullInput :: FilePath
+fullInput = "test/Test/Day11/full.txt"
+
 test :: SpecWith ()
 test =
   describe "Day11" $ do
     describe "soln" $ do
       it "short-input.txt" $ do
-        res <- soln "svr" ["dac", "fft"] shortInput
+        res <- soln shortInput
         res `shouldBe` 5
 
-      xit "short-input-p1.txt" $ do
-        res <- soln "you" [] "test/Test/Day11/short-p1.txt"
-        res `shouldBe` 5
+      -- xit "short-input-p1.txt" $ do
+      --   res <- soln "test/Test/Day11/short-p1.txt"
+      --   res `shouldBe` 5
 
       xit "full-input.txt" $ do
-        res <- soln "svr" ["dac", "fft"] "test/Test/Day11/full.txt"
+        res <- soln fullInput
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
 
