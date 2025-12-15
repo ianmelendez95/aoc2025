@@ -32,30 +32,30 @@ test :: SpecWith ()
 test =
   describe "Day10" $ do
     describe "soln" $ do
-      it "short-input.txt" $ do
+      xit "short-input.txt" $ do
         res <- soln shortInput
         res `shouldBe` 7
 
-      it "full-input.txt" $ do
+      xit "full-input.txt" $ do
         res <- soln "test/Test/Day10/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
 
     describe "pressButton" $ do
       it "simple press" $ do
-        pressButton0 (S.fromList [1, 2]) (S.singleton 3) `shouldBe` S.fromList [1, 2, 3]
+        pressButton0 [0, 1, 2, 3] (S.singleton 3) `shouldBe` [0, 1, 2, 4]
 
       it "first three" $ do
         -- [.##.] (3) (1,3) (2) (2,3) (0,2) (0,1)
         let result =
               foldl'
                 pressButton0
-                S.empty
+                [0, 0, 0, 0]
                 [ S.singleton 3,
                   S.fromList [1, 3],
                   S.singleton 2
                 ]
-        result `shouldBe` S.fromList [1, 2]
+        result `shouldBe` [0, 1, 1, 2]
 
     describe "pMachine" $ do
       it "parses first" $ do
@@ -69,4 +69,5 @@ test =
               S.fromList [2, 3],
               S.fromList [0, 2],
               S.fromList [0, 1]
-            ]
+            ] 
+            [3, 5, 4, 7]

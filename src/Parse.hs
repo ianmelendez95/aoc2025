@@ -19,6 +19,7 @@ module Parse (
   liftA2,
   C.eol,
   (<|>),
+  sepBy
   ) where 
 
 import Text.Megaparsec hiding (parse)
