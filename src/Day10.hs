@@ -10,6 +10,7 @@ where
 
 import Control.Applicative (liftA2)
 import Control.Monad.State
+import Control.Monad
 import Data.List
   ( find,
     foldl',
@@ -56,7 +57,8 @@ data Mach = Mach Lights [Button] deriving (Show, Eq)
 data MS = MS
   { univs :: Seq.Seq Univ,
     buttons :: [Button],
-    expected :: Lights
+    expected :: Lights,
+    machNum :: Int
   }
 
 type M = State MS
@@ -73,8 +75,18 @@ soln :: FilePath -> IO Int
 soln file = do
   t_lines <- T.lines <$> TIO.readFile file
   let machs = map readMachine t_lines
-      res = sum $ map evalMachine machs
+  sum <$> zipWithM evalMachineM [(1 :: Int)..] machs
+  where 
+    -- WHNF of result by printing
+    evalM :: Int -> Mach -> IO Int
+    evalM n = undefined
   -- mapM_ print machs
+  -- pure res
+
+evalMachineM :: Int -> Mach -> IO Int
+evalMachineM eval_n mach = do 
+  let res = evalMachine mach
+  putStrLn ("Result " ++ show eval_n ++ ": " ++ show res)
   pure res
 
 evalMachine :: Mach -> Int
