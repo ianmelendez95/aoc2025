@@ -6,6 +6,7 @@ module Day10
     evalMachine,
     pMachine,
     pressButton0,
+    machToZ3
   )
 where
 
@@ -78,6 +79,30 @@ soln file = do
   t_lines <- T.lines <$> TIO.readFile file
   let machs = map readMachine t_lines
   sum <$> zipWithM evalMachineM [(1 :: Int)..] machs
+
+machToZ3 :: Mach -> T.Text
+machToZ3 (Mach _ buttons joltage) = 
+  let btn_consts = concatMap declareBtnConst [0..(length buttons)]
+      press_asserts = map (\j -> assertBtnPresses (btnJoltageIdxs j buttons) j) joltage
+   in T.unlines $ btn_consts ++ press_asserts ++ eval_stmts
+  where 
+    eval_stmts = ["(check-sat)", "(get-model)"]
+
+btnJoltageIdxs :: Int -> [Button] -> [Int]
+btnJoltageIdxs j = map fst . filter ((j `S.member`) . snd) . zip [0..] 
+
+declareBtnConst :: Int -> [T.Text]
+declareBtnConst btn_idx = 
+  [ "(declare-const b" <> T.show btn_idx <> " Int)",
+    "(assert (>= b" <> T.show btn_idx <> " 0))"
+  ]
+
+assertBtnPresses :: [Int] -> Int -> T.Text
+assertBtnPresses btn_idxs press_count = 
+  "(assert (= (+ " <> T.unwords (map btnVar btn_idxs) <> ")" <> T.show press_count <> "))"
+
+btnVar :: Int -> T.Text
+btnVar btn_idx = T.pack ('b' : show btn_idx)
 
 evalMachineM :: Int -> Mach -> IO Int
 evalMachineM eval_n mach = do 
