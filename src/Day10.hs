@@ -3,6 +3,7 @@
 module Day10
   ( soln,
     Mach (..),
+    evalMachine,
     pMachine,
     pressButton0,
   )

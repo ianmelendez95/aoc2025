@@ -41,6 +41,15 @@ test =
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
 
+    describe "evalMachine" $ do 
+      it "evals first press soln" $ do 
+        let res = evalMachine (P.parse pMachine "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {0,0,0,1}")
+        res `shouldBe` 1
+
+      xit "evals first" $ do 
+        let res = evalMachine (P.parse pMachine "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}")
+        res `shouldBe` 10
+
     describe "pressButton" $ do
       it "simple press" $ do
         pressButton0 [0, 1, 2, 3] (S.singleton 3) `shouldBe` [0, 1, 2, 4]
