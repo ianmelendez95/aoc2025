@@ -82,7 +82,7 @@ soln file = do
 
 machToZ3 :: Mach -> T.Text
 machToZ3 (Mach _ buttons joltage) = 
-  let btn_consts = concatMap declareBtnConst [0..(length buttons)]
+  let btn_consts = concatMap declareBtnConst [0..(length buttons - 1)]
       press_asserts = map (\j -> assertBtnPresses (btnJoltageIdxs j buttons) j) joltage
    in T.unlines $ btn_consts ++ press_asserts ++ eval_stmts
   where 
