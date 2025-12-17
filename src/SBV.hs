@@ -1,4 +1,4 @@
-module SBV where 
+module SBV (optimizeLexicographic) where 
 
 import Data.SBV
 
@@ -41,10 +41,10 @@ problem = do [x1, x2] <- mapM sReal ["x1", "x2"]
              maximize "goal" $ 5 * x1 + 6 * x2
 --}
 
-test = sat problem
+optimizeLexicographic :: ConstraintSet -> IO OptimizeResult
+optimizeLexicographic = optimize Lexicographic
 
-problem :: ConstraintSet
-problem = do
+solve1 = optimize Lexicographic $ do
   b0 <- sInteger "b0"
   b1 <- sInteger "b1"
   b2 <- sInteger "b2"
@@ -62,4 +62,6 @@ problem = do
   constrain $ (b1 + b5) .>= 5
   constrain $ (b2 + b3 + b4) .>= 4
   constrain $ (b0 + b1 + b3) .>= 7
+
+  minimize "presses" (b0 + b1 + b2 + b3 + b4 + b5)
 

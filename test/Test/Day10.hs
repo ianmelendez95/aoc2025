@@ -24,6 +24,7 @@ import Test.Hspec
     xit,
   )
 import Test.QuickCheck
+import SBV
 
 shortInput :: FilePath
 shortInput = "test/Test/Day10/short.txt"
@@ -35,21 +36,29 @@ test :: SpecWith ()
 test =
   describe "Day10" $ do
     describe "soln" $ do
-      xit "short-input.txt" $ do
+      it "short-input.txt" $ do
         res <- soln shortInput
-        res `shouldBe` 7
+        res `shouldBe` 33
 
-      xit "full-input.txt" $ do
+      it "full-input.txt" $ do
         res <- soln "test/Test/Day10/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
+    
+    describe "solveMach" $ do 
+      it "solves first" $ do 
+        soln1 <- solveMach mach1
+        soln1 `shouldBe` 10
 
-    describe "machToZ3" $ do 
-      it "gens first" $ do 
-        let mach = P.parse pMachine "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}"
-            z3_script = machToZ3 mach
-        expected_script <- TIO.readFile "test/Test/Day10/solve_first_short.z3"
-        z3_script `shouldBe` expected_script
+    -- describe "machToZ3" $ do 
+    --   it "gens first" $ do 
+    --     let mach = P.parse pMachine "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}"
+    --     opt_res <- optimizeLexicographic $ machToZ3 mach
+    --     print opt_res
+    --     True `shouldBe` True
+        --     z3_script = machToZ3 mach
+        -- expected_script <- TIO.readFile "test/Test/Day10/solve_first_short.z3"
+        -- z3_script `shouldBe` expected_script
 
     describe "assertBtnPresses" $ do 
       it "first" $ do 

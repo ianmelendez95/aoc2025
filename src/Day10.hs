@@ -8,7 +8,8 @@ module Day10
     pressButton0,
     machToZ3,
     btnJoltageIdxs,
-    assertBtnPresses
+    assertBtnPresses,
+    solveMach
   )
 where
 
@@ -18,6 +19,7 @@ import Control.Monad
 import Data.List
   ( find,
     foldl',
+    foldr1,
     intercalate,
     intersperse,
     isPrefixOf,
@@ -49,6 +51,7 @@ import Data.Void
 import Debug.Trace (trace, traceShowId, traceWith)
 import Parse qualified as P
 import Text.Read (readMaybe)
+import Data.SBV
 
 type Lights = S.Set Int
 
@@ -80,15 +83,22 @@ soln :: FilePath -> IO Int
 soln file = do
   t_lines <- T.lines <$> TIO.readFile file
   let machs = map readMachine t_lines
-  sum <$> zipWithM evalMachineM [(1 :: Int)..] machs
+  sum <$> mapM solveMach machs
 
-machToZ3 :: Mach -> T.Text
-machToZ3 (Mach _ buttons joltages) = 
-  let btn_consts = concatMap declareBtnConst [0..(length buttons - 1)]
-      press_asserts = zipWith (\i j -> assertBtnPresses (btnJoltageIdxs i buttons) j) [0..(length joltages - 1)] joltages
-   in T.unlines $ btn_consts ++ press_asserts ++ eval_stmts
-  where 
-    eval_stmts = ["(check-sat)", "(get-model)"]
+solveMach :: Mach -> IO Int
+solveMach = (getResult <$>) . optimize Lexicographic . machToZ3 
+
+getResult :: OptimizeResult -> Int
+getResult (LexicographicResult smt_result) = 
+  maybe (error "UNSAT") fromIntegral . getModelValue "presses" $ smt_result
+
+machToZ3 :: Mach -> ConstraintSet
+machToZ3 (Mach _ buttons joltages) = do
+  btns_with_symbols <- zipWithM (\i b -> ((b,) <$>) . sInteger . ("b" ++) . show $ i) [0..(length buttons - 1)] buttons
+  let btn_symbols = map snd btns_with_symbols
+  mapM (constrain . (.>= 0)) btn_symbols
+  zipWithM (\i j -> constrain . (.>= (fromIntegral j)) . foldr1 (+) . map snd . filter ((S.member i) . fst) $ btns_with_symbols) [0..(length joltages - 1)] joltages
+  minimize "presses" . foldr1 (+) $ btn_symbols
 
 btnJoltageIdxs :: Int -> [Button] -> [Int]
 btnJoltageIdxs j = map fst . filter ((j `S.member`) . snd) . zip [0..] 
