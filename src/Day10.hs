@@ -3,12 +3,8 @@
 module Day10
   ( soln,
     Mach (..),
-    evalMachine,
     pMachine,
-    pressButton0,
     machToZ3,
-    btnJoltageIdxs,
-    assertBtnPresses,
     solveMach
   )
 where
@@ -63,22 +59,6 @@ type Univ = (Joltage, Int)
 
 data Mach = Mach Lights [Button] Joltage deriving (Show, Eq)
 
-data MS = MS
-  { univs :: Seq.Seq Univ,
-    buttons :: [Button],
-    expected :: Joltage
-  }
-
-type M = State MS
-
-mkMS :: Mach -> MS
-mkMS (Mach _ buttons joltage) =
-  MS
-    { univs = Seq.singleton (replicate (length joltage) 0, 0),
-      buttons,
-      expected = joltage
-    }
-
 soln :: FilePath -> IO Int
 soln file = do
   t_lines <- T.lines <$> TIO.readFile file
@@ -99,61 +79,6 @@ machToZ3 (Mach _ buttons joltages) = do
   mapM (constrain . (.>= 0)) btn_symbols
   zipWithM (\i j -> constrain . (.>= (fromIntegral j)) . foldr1 (+) . map snd . filter ((S.member i) . fst) $ btns_with_symbols) [0..(length joltages - 1)] joltages
   minimize "presses" . foldr1 (+) $ btn_symbols
-
-btnJoltageIdxs :: Int -> [Button] -> [Int]
-btnJoltageIdxs j = map fst . filter ((j `S.member`) . snd) . zip [0..] 
-
-declareBtnConst :: Int -> [T.Text]
-declareBtnConst btn_idx = 
-  [ "(declare-const b" <> T.show btn_idx <> " Int)",
-    "(assert (>= b" <> T.show btn_idx <> " 0))"
-  ]
-
-assertBtnPresses :: [Int] -> Int -> T.Text
-assertBtnPresses btn_idxs press_count = 
-  "(assert (= (+ " <> T.unwords (map btnVar btn_idxs) <> ") " <> T.show press_count <> "))"
-
-btnVar :: Int -> T.Text
-btnVar btn_idx = T.pack ('b' : show btn_idx)
-
-evalMachineM :: Int -> Mach -> IO Int
-evalMachineM eval_n mach = do 
-  let res = evalMachine mach
-  putStrLn ("Result " ++ show eval_n ++ ": " ++ show res)
-  pure res
-
-evalMachine :: Mach -> Int
-evalMachine machine = evalState travM (mkMS machine)
-
-travM :: M Int
-travM = do
-  (cur_joltage, cur_presses) <- curJoltage
-  btns <- gets buttons
-  expected <- gets expected
-  let next_joltages = map (pressButton0 cur_joltage) btns
-      next_presses = 1 + cur_presses
-      next_univs = map (, next_presses) next_joltages
-  if expected `elem` next_joltages
-  then pure next_presses
-  else do 
-    modify $ \ms@MS{univs} -> ms{univs = foldl' (Seq.|>) univs next_univs}
-    travM
-
-curJoltage :: M (Joltage, Int)
-curJoltage = do 
-  cur_univs <- gets univs
-  case Seq.viewl cur_univs of 
-    (cur_univ Seq.:< rest_univs) -> do 
-      modify $ \ms -> ms{univs = rest_univs}
-      pure cur_univ
-    _ -> error "no more univs!!"
-
--- let all_presses = map (\b -> buttonPresss0 expected (pressButton0 b) buttons) buttons
---  in undefined
-
-pressButton0 :: Joltage -> Button -> Joltage
-pressButton0 cur_joltage btn_joltages = 
-  zipWith (\i jolts -> if i `S.member` btn_joltages then jolts + 1 else jolts) [0..] cur_joltage
 
 readMachine :: T.Text -> Mach
 readMachine = P.parse pMachine

@@ -43,7 +43,7 @@ test =
       it "full-input.txt" $ do
         res <- soln "test/Test/Day10/full.txt"
         putStrLn $ "Solution: " ++ show res
-        res `shouldNotBe` 0
+        res `shouldNotBe` 17558
     
     describe "solveMach" $ do 
       it "solves first" $ do 
@@ -59,46 +59,6 @@ test =
         --     z3_script = machToZ3 mach
         -- expected_script <- TIO.readFile "test/Test/Day10/solve_first_short.z3"
         -- z3_script `shouldBe` expected_script
-
-    describe "assertBtnPresses" $ do 
-      it "first" $ do 
-        assertBtnPresses [4, 5] 3 `shouldBe` "(assert (= (+ b4 b5) 3))"
-
-    describe "btnJoltageIdxs" $ do 
-      it "gets first" $ do 
-        let (Mach _ buttons _) = mach1
-            btn_idxs = btnJoltageIdxs 0 buttons
-        btn_idxs `shouldBe` [4, 5]
-
-      it "gets second" $ do 
-        let (Mach _ buttons _) = mach1
-            btn_idxs = btnJoltageIdxs 1 buttons
-        btn_idxs `shouldBe` [1, 5]
-
-    describe "evalMachine" $ do 
-      it "evals first press soln" $ do 
-        let res = evalMachine (P.parse pMachine "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {0,0,0,1}")
-        res `shouldBe` 1
-
-      xit "evals first" $ do 
-        let res = evalMachine (P.parse pMachine "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}")
-        res `shouldBe` 10
-
-    describe "pressButton" $ do
-      it "simple press" $ do
-        pressButton0 [0, 1, 2, 3] (S.singleton 3) `shouldBe` [0, 1, 2, 4]
-
-      it "first three" $ do
-        -- [.##.] (3) (1,3) (2) (2,3) (0,2) (0,1)
-        let result =
-              foldl'
-                pressButton0
-                [0, 0, 0, 0]
-                [ S.singleton 3,
-                  S.fromList [1, 3],
-                  S.singleton 2
-                ]
-        result `shouldBe` [0, 1, 1, 2]
 
     describe "pMachine" $ do
       it "parses first" $ do
