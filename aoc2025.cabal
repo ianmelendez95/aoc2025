@@ -94,6 +94,8 @@ library
       Day10
       Day11
       Day12
+      Z3
+      Turtle
 
     default-extensions:
       OverloadedStrings
@@ -118,7 +120,8 @@ library
       array,
       bytestring,
       mtl,
-      split
+      split,
+      turtle
 
     -- Directories containing source files.
     hs-source-dirs:   src

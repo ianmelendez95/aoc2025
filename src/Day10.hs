@@ -6,7 +6,9 @@ module Day10
     evalMachine,
     pMachine,
     pressButton0,
-    machToZ3
+    machToZ3,
+    btnJoltageIdxs,
+    assertBtnPresses
   )
 where
 
@@ -81,9 +83,9 @@ soln file = do
   sum <$> zipWithM evalMachineM [(1 :: Int)..] machs
 
 machToZ3 :: Mach -> T.Text
-machToZ3 (Mach _ buttons joltage) = 
+machToZ3 (Mach _ buttons joltages) = 
   let btn_consts = concatMap declareBtnConst [0..(length buttons - 1)]
-      press_asserts = map (\j -> assertBtnPresses (btnJoltageIdxs j buttons) j) joltage
+      press_asserts = zipWith (\i j -> assertBtnPresses (btnJoltageIdxs i buttons) j) [0..(length joltages - 1)] joltages
    in T.unlines $ btn_consts ++ press_asserts ++ eval_stmts
   where 
     eval_stmts = ["(check-sat)", "(get-model)"]
@@ -99,7 +101,7 @@ declareBtnConst btn_idx =
 
 assertBtnPresses :: [Int] -> Int -> T.Text
 assertBtnPresses btn_idxs press_count = 
-  "(assert (= (+ " <> T.unwords (map btnVar btn_idxs) <> ")" <> T.show press_count <> "))"
+  "(assert (= (+ " <> T.unwords (map btnVar btn_idxs) <> ") " <> T.show press_count <> "))"
 
 btnVar :: Int -> T.Text
 btnVar btn_idx = T.pack ('b' : show btn_idx)
