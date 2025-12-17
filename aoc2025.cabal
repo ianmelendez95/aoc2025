@@ -96,6 +96,7 @@ library
       Day12
       Z3
       Turtle
+      SBV
 
     default-extensions:
       OverloadedStrings
@@ -121,7 +122,8 @@ library
       bytestring,
       mtl,
       split,
-      turtle
+      turtle,
+      sbv
 
     -- Directories containing source files.
     hs-source-dirs:   src
