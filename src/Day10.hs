@@ -55,8 +55,6 @@ type Button = S.Set Int
 
 type Joltage = [Int]
 
-type Univ = (Joltage, Int)
-
 data Mach = Mach Lights [Button] Joltage deriving (Show, Eq)
 
 soln :: FilePath -> IO Int
@@ -66,7 +64,15 @@ soln file = do
   sum <$> mapM solveMach machs
 
 solveMach :: Mach -> IO Int
-solveMach = (getResult <$>) . optimize Lexicographic . machToZ3 
+solveMach mach = do 
+  let c_set = machToZ3 mach
+  -- print c_set
+  opt_result <- optimizeWith (z3{verbose = True}) Lexicographic c_set
+  -- print opt_result
+  pure $ getResult opt_result
+
+verifyPresses :: Mach -> SMTResult -> SMTResult
+verifyPresses (Mach _ buttons expect_joltages) = undefined
 
 getResult :: OptimizeResult -> Int
 getResult (LexicographicResult smt_result) = 
@@ -77,7 +83,7 @@ machToZ3 (Mach _ buttons joltages) = do
   btns_with_symbols <- zipWithM (\i b -> ((b,) <$>) . sInteger . ("b" ++) . show $ i) [0..(length buttons - 1)] buttons
   let btn_symbols = map snd btns_with_symbols
   mapM (constrain . (.>= 0)) btn_symbols
-  zipWithM (\i j -> constrain . (.>= (fromIntegral j)) . foldr1 (+) . map snd . filter ((S.member i) . fst) $ btns_with_symbols) [0..(length joltages - 1)] joltages
+  zipWithM (\i j -> constrain . (.>= (literal (toInteger j))) . foldr1 (+) . map snd . filter ((S.member i) . fst) $ btns_with_symbols) [0..(length joltages - 1)] joltages
   minimize "presses" . foldr1 (+) $ btn_symbols
 
 readMachine :: T.Text -> Mach
