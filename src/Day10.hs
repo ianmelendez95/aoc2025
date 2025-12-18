@@ -7,7 +7,10 @@ module Day10
     machToZ3,
     solveMach,
     simulatePresses,
-    simPress
+    simPress,
+    verifyResult,
+    getResult,
+    getResultBtnPresses,
   )
 where
 
@@ -57,7 +60,12 @@ type Button = S.Set Int
 
 type Joltage = [Int]
 
-data Mach = Mach Lights [Button] Joltage deriving (Show, Eq)
+data Mach = Mach
+  { machLights :: Lights,
+    machButtons :: [Button],
+    machJoltages :: Joltage
+  }
+  deriving (Show, Eq)
 
 soln :: FilePath -> IO Int
 soln file = do
@@ -74,25 +82,25 @@ solveMach mach = do
   pure $ getResult verified_result
 
 verifyResult :: Mach -> OptimizeResult -> OptimizeResult
-verifyResult mach@(Mach _ buttons expect_joltages) opt_result = 
+verifyResult mach@(Mach _ buttons expect_joltages) opt_result =
   let result_btns = getResultBtnPresses (length buttons) opt_result
-      result_final_joltages = simulatePresses mach result_btns 
+      result_final_joltages = simulatePresses mach result_btns
    in if result_final_joltages /= expect_joltages
         then error $ "ERROR - invalid solution: mach='" ++ show mach ++ "' soln:\n" ++ show opt_result
         else opt_result
 
 simulatePresses :: Mach -> [Int] -> [Int]
-simulatePresses (Mach _ buttons expect_joltages) press_counts = 
+simulatePresses (Mach _ buttons expect_joltages) press_counts =
   let initial_joltages = replicate (length expect_joltages) 0
    in foldl' foldPresses initial_joltages $ zip press_counts buttons
   where
     foldPresses :: [Int] -> (Int, Button) -> [Int]
-    foldPresses cur_joltages (press_count, btn_set) = 
+    foldPresses cur_joltages (press_count, btn_set) =
       simPress press_count btn_set cur_joltages
 
 simPress :: Int -> Button -> [Int] -> [Int]
 simPress press_count btn_set cur_joltages =
-  zipWith (+) (map (\j_idx -> if j_idx `S.member` btn_set then press_count else 0) [0..(length cur_joltages - 1)]) cur_joltages
+  zipWith (+) (map (\j_idx -> if j_idx `S.member` btn_set then press_count else 0) [0 .. (length cur_joltages - 1)]) cur_joltages
 
 getResultBtnPresses :: Int -> OptimizeResult -> [Int]
 getResultBtnPresses btn_length opt_result = map ((`getResultVar` opt_result) . ('b' :) . show) [0 .. (btn_length - 1)]

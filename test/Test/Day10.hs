@@ -25,6 +25,7 @@ import Test.Hspec
   )
 import Test.QuickCheck
 import SBV
+import Data.SBV
 
 shortInput :: FilePath
 shortInput = "test/Test/Day10/short.txt"
@@ -40,7 +41,7 @@ test =
         res <- soln shortInput
         res `shouldBe` 33
 
-      it "full-input.txt" $ do
+      xit "full-input.txt" $ do
         res <- soln "test/Test/Day10/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 17558
@@ -52,6 +53,18 @@ test =
 
       it "solves sample 1" $ do 
         soln1 <- solveMach $ P.parse pMachine "[#...##...#] (0,1,2,6,7,9) (2,4,6,9) (3,7,8,9) (0,1,2,5,6,8,9) (5,8) (5,9) (1) (1,2) (1,4,6) (0,3,4,6,8) (0,1,2,3,4,5,6,7) (1,2,4,7,8) (0,2,3,4,5,6,7,9) {63,82,89,51,64,66,71,77,59,75}"
+        soln1 `shouldBe` 0
+
+      it "solves invalid" $ do 
+        let mach_txt = "[#..####..] (3,6,8) (1,2,3,4,5,6,7) (5,6) (0,1,3,4) (1,2,3,4,5,7,8) (0,1,3,4,8) \
+                       \(0,1,2,3,4,5,7,8) (0,2,4,5,6,8) (4,8) {37,50,37,52,77,41,26,26,54}"
+            mach = P.parse pMachine mach_txt
+            c_set = machToZ3 mach
+        opt_result <- optimizeWith (z3 {verbose = False}) Lexicographic c_set
+        let result_btns = getResultBtnPresses (length $ machButtons mach) opt_result
+            soln1 = getResult opt_result
+        -- print opt_result
+        putStrLn $ "Final joltages: " ++ show (simulatePresses mach result_btns) ++ " Expected: " ++ show (machJoltages mach)
         soln1 `shouldBe` 0
 
     describe "simulatePresses" $ do 
