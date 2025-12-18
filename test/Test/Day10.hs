@@ -54,6 +54,22 @@ test =
         soln1 <- solveMach $ P.parse pMachine "[#...##...#] (0,1,2,6,7,9) (2,4,6,9) (3,7,8,9) (0,1,2,5,6,8,9) (5,8) (5,9) (1) (1,2) (1,4,6) (0,3,4,6,8) (0,1,2,3,4,5,6,7) (1,2,4,7,8) (0,2,3,4,5,6,7,9) {63,82,89,51,64,66,71,77,59,75}"
         soln1 `shouldBe` 0
 
+    describe "simulatePresses" $ do 
+      -- [.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
+      -- One way to do this is by pressing (3) once, (1,3) three times, (2,3) three times, (0,2) once, and (0,1) twice.
+      it "does example" $ do 
+        let joltages = simulatePresses mach1 [1, 3, 0, 3, 1, 2]
+        joltages `shouldBe` [3, 5, 4, 7]
+
+      it "does solved" $ do
+        let joltages = simulatePresses mach1 [1, 2, 0, 4, 0, 3]
+        joltages `shouldBe` [3, 5, 4, 7]
+
+    describe "simPress" $ do 
+      it "simulates simple" $ do 
+        let joltages = simPress 3 (S.fromList [1, 3]) [0, 0, 0, 0]
+        joltages `shouldBe` [0, 3, 0, 3]
+
     -- describe "machToZ3" $ do 
     --   it "gens first" $ do 
     --     let mach = P.parse pMachine "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}"
