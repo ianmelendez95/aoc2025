@@ -41,7 +41,7 @@ test =
         res <- soln shortInput
         res `shouldBe` 33
 
-      xit "full-input.txt" $ do
+      it "full-input.txt" $ do
         res <- soln "test/Test/Day10/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 17558
@@ -65,7 +65,7 @@ test =
             soln1 = getResult opt_result
         -- print opt_result
         putStrLn $ "Final joltages: " ++ show (simulatePresses mach result_btns) ++ " Expected: " ++ show (machJoltages mach)
-        soln1 `shouldBe` 0
+        soln1 `shouldBe` 83
 
     describe "simulatePresses" $ do 
       -- [.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}

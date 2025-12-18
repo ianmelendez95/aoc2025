@@ -121,7 +121,7 @@ machToZ3 (Mach _ buttons joltages) = do
   btns_with_symbols <- zipWithM (\i b -> ((b,) <$>) . sInteger . ("b" ++) . show $ i) [0 .. (length buttons - 1)] buttons
   let btn_symbols = map snd btns_with_symbols
   mapM (constrain . (.>= 0)) btn_symbols
-  zipWithM (\i j -> constrain . (.>= (literal (toInteger j))) . foldr1 (+) . map snd . filter ((S.member i) . fst) $ btns_with_symbols) [0 .. (length joltages - 1)] joltages
+  zipWithM (\i j -> constrain . (.== (literal (toInteger j))) . foldr1 (+) . map snd . filter ((S.member i) . fst) $ btns_with_symbols) [0 .. (length joltages - 1)] joltages
   minimize "presses" . foldr1 (+) $ btn_symbols
 
 readMachine :: T.Text -> Mach
