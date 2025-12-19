@@ -17,7 +17,18 @@ import System.IO.Unsafe (unsafeDupablePerformIO)
 foreign import capi "geos_bind.h hgeos_contains" c_hgeosContains :: CString -> CString -> IO CChar
 
 wktPolygon :: [(Int, Int)] -> T.Text
-wktPolygon coords = "POLYGON(( " <> T.intercalate ", " (map (\(x, y) -> T.show x <> " " <> T.show y) coords) <> " ))"
+wktPolygon coords = "POLYGON(( " <> T.intercalate ", " (map (\(x, y) -> T.show x <> " " <> T.show y) (closeCoordLoop coords)) <> " ))"
+
+closeCoordLoop :: [(Int, Int)] -> [(Int, Int)]
+closeCoordLoop [] = []
+closeCoordLoop (c:cs) = c : go cs 
+  where 
+    go [] = []
+    go [c'] = 
+      if c == c'
+        then [c'] -- already closed
+        else [c', c] -- close off with the last one
+    go (c' : cs') = c' : go cs'
 
 geosContains :: T.Text -> T.Text -> Bool
 geosContains wkt_a wkt_b = unsafeDupablePerformIO (geosContainsIO wkt_a wkt_b) 
