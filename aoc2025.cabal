@@ -50,6 +50,7 @@ extra-doc-files:    CHANGELOG.md
 -- Extra source files to be distributed with the package, such as examples, or a tutorial module.
 extra-source-files:
     files/*
+    cbits/geos_bind.h
 
 common warnings
     ghc-options: -Wall
@@ -75,8 +76,14 @@ executable aoc2025
     default-language: GHC2021
 
 library
+    includes:         geos_c.h
+    extra-libraries:  geos_c
+
     -- Import common warning flags.
     import:           warnings
+
+    c-sources:        cbits/geos_bind.c
+    include-dirs:     cbits
 
     -- Modules exported by the library.
     exposed-modules:  
