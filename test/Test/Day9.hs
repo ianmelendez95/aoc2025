@@ -35,16 +35,10 @@ test =
         res <- soln shortInput
         res `shouldBe` 24
 
-      xit "full-input.txt" $ do
+      it "full-input.txt" $ do
         res <- soln "test/Test/Day9/full.txt"
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
-
-    -- describe "rectValid0" $ do
-    --   it "biggest invalid" $ do 
-    --     coords <- readCoordsFile shortInput
-    --     let biggest = ((2,3), (11,7))
-
 
     describe "bigRects0" $ do 
       it "finds biggest" $ do 

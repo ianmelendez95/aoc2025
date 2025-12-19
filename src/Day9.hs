@@ -8,6 +8,7 @@ module Day9
   )
 where
 
+import Control.Monad (filterM)
 import Control.Applicative (liftA2)
 import Data.List
   ( find,
@@ -49,11 +50,26 @@ soln file = do
   coords <- readCoordsFile file
   let input_poly_wkt = wktPolygon coords
       big_rects = bigRects0 (pairs0 $ sort coords)
-      big_rects_in_poly = filter (polyContainsRect input_poly_wkt) big_rects
-  case big_rects_in_poly of 
-    [] -> error "NO BIG RECTS"
-    (big_rect : _) -> 
+  big_rect_in_poly <- findIO (polyContainsRectIO input_poly_wkt) big_rects
+  case big_rect_in_poly of 
+    Nothing -> error "NO BIG RECTS"
+    Just big_rect -> 
       pure $ pairArea0 big_rect
+
+findIO :: (a -> IO Bool) -> [a] -> IO (Maybe a)
+findIO _ [] = pure Nothing
+findIO f (x:xs) = do
+  p <- f x
+  if p 
+  then pure $ Just x
+  else findIO f xs
+  
+polyContainsRectIO :: T.Text -> Rect  -> IO Bool
+polyContainsRectIO poly_wkt rect_pair = do
+  -- putStrLn $ "Checking: " ++ show rect_pair
+  let result = polyContainsRect poly_wkt rect_pair
+  -- putStrLn $ "Contains: rect=" ++ show rect_pair ++ " :" ++ show result
+  pure result
 
 polyContainsRect :: T.Text -> Rect  -> Bool
 polyContainsRect poly_wkt rect_pair =
