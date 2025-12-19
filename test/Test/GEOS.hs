@@ -48,6 +48,6 @@ test :: SpecWith ()
 test = 
   describe "geosContains" $ do 
     it "contains" $ do 
-      does_contain <- geosContainsIO outer_poly inside_poly
+      let does_contain = geosContains outer_poly inside_poly
       does_contain `shouldBe` True
 

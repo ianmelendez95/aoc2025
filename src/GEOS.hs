@@ -9,7 +9,12 @@ import Foreign.C.String (CString)
 import Data.Text qualified as T
 import Data.Text.Foreign qualified as TF
 
+import System.IO.Unsafe (unsafeDupablePerformIO)
+
 foreign import capi "geos_bind.h hgeos_contains" c_hgeosContains :: CString -> CString -> IO CChar
+
+geosContains :: T.Text -> T.Text -> Bool
+geosContains wkt_a wkt_b = unsafeDupablePerformIO (geosContainsIO wkt_a wkt_b) 
 
 geosContainsIO :: T.Text -> T.Text -> IO Bool
 geosContainsIO wkt_a wkt_b = 
