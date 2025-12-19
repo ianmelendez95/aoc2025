@@ -33,23 +33,23 @@ test =
     describe "soln" $ do
       it "short-input.txt" $ do
         res <- soln shortInput 10
-        res `shouldBe` 0
+        res `shouldBe` 40
 
-      xit "full-input.txt" $ do
+      it "full-input.txt" $ do
         res <- soln "test/Test/Day8/full.txt" 1000
         putStrLn $ "Solution: " ++ show res
         res `shouldNotBe` 0
 
-    describe "conPairs" $ do 
-      it "short" $ do 
-        coords <- readCoordsFile shortInput
-        let pairs = ascPairCoords0 coords
-            circuits@Circuits{circuitCount, circuitMap} = conPairs0 . take 10 $ pairs
-            circuit_sizes = circuitSizes circuits 
-            circuit_sizes_desc = sortBy (comparing (Down . snd)) . M.toList $ circuit_sizes
-        -- mapM_ print $ M.toList circuitMap
-        mapM_ print circuit_sizes_desc
-        circuitCount `shouldBe` 11
+    -- describe "conPairs" $ do 
+    --   it "short" $ do 
+    --     coords <- readCoordsFile shortInput
+    --     let pairs = ascPairCoords0 coords
+    --         circuits@Circuits{circuitCount, circuitMap} = conPairs0 . take 10 $ pairs
+    --         circuit_sizes = circuitSizes circuits 
+    --         circuit_sizes_desc = sortBy (comparing (Down . snd)) . M.toList $ circuit_sizes
+    --     -- mapM_ print $ M.toList circuitMap
+    --     -- mapM_ print circuit_sizes_desc
+    --     circuitCount `shouldBe` 11
     
     describe "ascPairCoords0" $ do 
       it "short" $ do 

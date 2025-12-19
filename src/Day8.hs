@@ -46,15 +46,19 @@ soln :: FilePath -> Int -> IO Int
 soln file connection_n = do
   coords <- readCoordsFile file 
   let pairs = ascPairCoords0 coords
-      circuits@Circuits{circuitCount, circuitMap} = conPairs0 . take connection_n $ pairs
+      circuits = conPairs0 . take connection_n $ pairs
       circuit_sizes = circuitSizes circuits 
-      -- circuit_sizes_desc = map snd . sortBy (comparing Down) . M.elems $ circuit_sizes
+      circuit_sizes_desc = sortBy (comparing Down) . M.elems $ circuit_sizes
+      big_three = take 3 circuit_sizes_desc
       -- max_circuit_sizes = (map take max_n $ circuit_sizes_desc)
 
       -- result :: Int
       -- result = product . take max_n $ circuit_sizes_desc
 
-  pure 0
+  -- putStrLn $ "Pairs: " ++ show pairs
+  -- putStrLn $ "Circuits: " ++ show circuits
+  -- putStrLn $ "Big three: " ++ show big_three
+  pure $ product big_three
 
 readCoordsFile :: FilePath -> IO [Coord]
 readCoordsFile file = do 
@@ -66,7 +70,7 @@ data Coord = Coord Int Int Int deriving (Show, Eq, Ord)
 data Circuits = Circuits {
   circuitCount :: Int,
   circuitMap :: M.Map Coord Int
-}
+} deriving Show
 
 emptyCircuits :: Circuits
 emptyCircuits = Circuits 0 M.empty
@@ -93,7 +97,7 @@ newCircuit coord1 coord2 Circuits{circuitCount, circuitMap} =
    in Circuits new_circuit (M.insert coord1 new_circuit (M.insert coord2 new_circuit circuitMap))
 
 conPairs0 :: [(Coord, Coord)] -> Circuits
-conPairs0 = foldl' conCoords0 emptyCircuits 
+conPairs0 = foldl' conCoords0 emptyCircuits
 
 conCoords0 :: Circuits -> (Coord, Coord) -> Circuits
 conCoords0 circuits pair@(coord1, coord2) =  
