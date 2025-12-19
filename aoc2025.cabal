@@ -76,11 +76,11 @@ executable aoc2025
     default-language: GHC2021
 
 library
-    includes:         geos_c.h
-    extra-libraries:  geos_c
-
     -- Import common warning flags.
     import:           warnings
+
+    includes:         geos_c.h
+    extra-libraries:  geos_c
 
     c-sources:        cbits/geos_bind.c
     include-dirs:     cbits
@@ -104,6 +104,7 @@ library
       Z3
       Turtle
       SBV
+      GEOS
 
     default-extensions:
       OverloadedStrings
