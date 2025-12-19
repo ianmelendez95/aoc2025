@@ -46,19 +46,22 @@ soln :: FilePath -> Int -> IO Int
 soln file connection_n = do
   coords <- readCoordsFile file 
   let pairs = ascPairCoords0 coords
-      circuits = conPairs0 . take connection_n $ pairs
-      circuit_sizes = circuitSizes circuits 
-      circuit_sizes_desc = sortBy (comparing Down) . M.elems $ circuit_sizes
-      big_three = take 3 circuit_sizes_desc
+      init_circs = loneCircuits0 coords
+      (Coord x1 _ _, Coord x2 _ _) = fromMaybe (error "No soln") $ connTillOne init_circs pairs
+      -- circuits =  . take connection_n $ pairs
+      -- circuit_sizes = circuitSizes circuits 
+      -- circuit_sizes_desc = sortBy (comparing Down) . M.elems $ circuit_sizes
+      -- big_three = take 3 circuit_sizes_desc
       -- max_circuit_sizes = (map take max_n $ circuit_sizes_desc)
 
       -- result :: Int
       -- result = product . take max_n $ circuit_sizes_desc
 
-  -- putStrLn $ "Pairs: " ++ show pairs
+  -- putStrLn "--- Pair ---"
+  -- mapM_ print pairs
   -- putStrLn $ "Circuits: " ++ show circuits
   -- putStrLn $ "Big three: " ++ show big_three
-  pure $ product big_three
+  pure $ x1 * x2
 
 readCoordsFile :: FilePath -> IO [Coord]
 readCoordsFile file = do 
@@ -67,13 +70,20 @@ readCoordsFile file = do
 
 data Coord = Coord Int Int Int deriving (Show, Eq, Ord)
 
-data Circuits = Circuits {
-  circuitCount :: Int,
+newtype Circuits = Circuits {
   circuitMap :: M.Map Coord Int
 } deriving Show
 
-emptyCircuits :: Circuits
-emptyCircuits = Circuits 0 M.empty
+-- emptyCircuits :: Circuits
+-- emptyCircuits = Circuits M.empty
+
+connTillOne :: Circuits -> [(Coord, Coord)] -> Maybe (Coord, Coord)
+connTillOne _ [] = Nothing
+connTillOne circuits (pair : pairs) = 
+  let circuits' = conCoords0 circuits pair
+   in if allAreOne circuits'
+        then Just pair
+        else connTillOne circuits' pairs
 
 coordCircuits :: (Coord, Coord) -> Circuits -> (Maybe Int, Maybe Int)
 coordCircuits (c1, c2) Circuits{circuitMap} = (M.lookup c1 circuitMap, M.lookup c2 circuitMap)
@@ -91,23 +101,26 @@ circuitSizes = M.foldr mergeCount M.empty . circuitMap
     mergeCount :: Int -> M.Map Int Int -> M.Map Int Int
     mergeCount circuit = M.insertWith (+) circuit 1
 
-newCircuit :: Coord -> Coord -> Circuits -> Circuits
-newCircuit coord1 coord2 Circuits{circuitCount, circuitMap} = 
-  let new_circuit = circuitCount + 1
-   in Circuits new_circuit (M.insert coord1 new_circuit (M.insert coord2 new_circuit circuitMap))
+-- newCircuit :: Coord -> Coord -> Circuits -> Circuits
+-- newCircuit coord1 coord2 Circuits{circuitCount, circuitMap} = 
+--   let new_circuit = circuitCount + 1
+--    in Circuits new_circuit (M.insert coord1 new_circuit (M.insert coord2 new_circuit circuitMap))
 
-conPairs0 :: [(Coord, Coord)] -> Circuits
-conPairs0 = foldl' conCoords0 emptyCircuits
+conPairs0 :: [(Coord, Coord)] -> Circuits -> Circuits
+conPairs0 pairs init_circuits = foldl' conCoords0 init_circuits pairs
+
+loneCircuits0 :: [Coord] -> Circuits
+loneCircuits0 = Circuits . M.fromList . (`zip` [0..])
 
 conCoords0 :: Circuits -> (Coord, Coord) -> Circuits
-conCoords0 circuits pair@(coord1, coord2) =  
+conCoords0 circuits pair =  
   case coordCircuits pair circuits of 
-    (Nothing, Nothing) -> newCircuit coord1 coord2 circuits
-    -- both connected, merge circuits!
     (Just circuit1, Just circuit2) -> mergeCircuits circuit1 circuit2 circuits
-    -- first one connected, connect the second one
-    (Just circuit1, Nothing) -> connectCoord coord2 circuit1 circuits
-    (Nothing, Just circuit2) -> connectCoord coord1 circuit2 circuits
+    _ -> error $ "Coord without circuit: " ++ show (circuits, pair)
+
+allAreOne :: Circuits -> Bool
+allAreOne Circuits{circuitMap} =
+  ((== 1) . S.size) . S.fromList . M.elems $ circuitMap
 
 ascPairCoords0 :: [Coord] -> [(Coord, Coord)]
 ascPairCoords0 = map snd . sortBy (comparing fst) . pairCoords0
